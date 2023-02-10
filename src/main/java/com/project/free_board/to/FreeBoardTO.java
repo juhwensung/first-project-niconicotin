@@ -20,4 +20,5 @@ public class FreeBoardTO {
 	private String free_file_name;
 	private int free_file_size;
 	private Date free_smoke_years;
+	private boolean free_public;
 }

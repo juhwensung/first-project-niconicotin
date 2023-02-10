@@ -1,0 +1,196 @@
+CREATE TABLE member_table (
+	member_seq int NOT NULL primary key auto_increment,
+	email varchar(50) NOT NULL unique,
+	password varchar(65) NOT NULL,
+	name varchar(15) NOT NULL,
+	address varchar(50) NOT NULL,
+	phone varchar(20) NOT NULL,
+	nickname varchar(15) NULL,
+	smoke_years date NULL,
+	prefer_cigar varchar(30) NULL,
+	sign_date datetime NOT NULL,
+	birthday date NOT NULL
+);
+
+insert into member_table values (0, 'test@gmail.com', HEX(AES_ENCRYPT('123456', SHA2('apfh2009@naver.com', 256))), '이름', '주소', '01000000000' , '닉네임', '2020-01-01' , '선호 담배',  now(), '1998-09-08');
+//복호화;
+//select AES_DECRYPT(UNHEX(password), SHA2('apfh2009@naver.com',256))as password from member_table;
+
+select * from member_table where email='test@gmail.com' and password = HEX(AES_ENCRYPT('123456', SHA2('apfh2009@naver.com', 256)));
+select id, password from member_table where email=? and password = HEX(AES_ENCRYPT(?, SHA2('apfh2009@naver.com', 256)));
+
+CREATE TABLE cigar_list (
+	cigar_seq int NOT NULL primary key auto_increment,
+	cigar_writer_seq int NOT NULL,
+	cigar_brand varchar(16) NOT NULL,
+	cigar_name varchar(30) NOT NULL,
+	cigar_tar decimal(4,2) NOT NULL,
+	cigar_nicotine decimal(4,2) NOT NULL,
+	cigar_file_name varchar(30) NOT NULL,
+	cigar_file_size int NOT NULL,
+	cigar_hash_tag varchar(50) NOT NULL,
+	cigar_content varchar(21000) NOT NULL,
+	cigar_total_grade decimal(4,2) NOT NULL,
+	cigar_reg_date datetime NOT NULL,
+	cigar_hit int NOT NULL,
+	constraint foreign key (cigar_writer_seq) references member_table (member_seq)
+);
+
+insert into cigar_list values (0, 1, '말보루', '화이트 후레쉬',  6.0, 0.5, '말보루.jpg', 60, '#해쉬#태그', '내용', 9.9, now(), 0); 
+
+"select cigar_seq, cigar_writer_seq, cigar_brand, cigar_name, cigar_tar, cigar_nicotine, cigar_file_name, cigar_file_size, cigar_hash_tag, cigar_content, cigar_total_grade cigar_reg_date, cigar_hit from cigar_list order by cigar_seq desc";
+
+CREATE TABLE gongji_board (
+	gongji_seq int NOT NULL primary key auto_increment,
+	gongji_writer_seq int NOT NULL,
+	gongji_subject varchar(50) NOT NULL,
+	gongji_writer varchar(15) NOT NULL,
+	gongji_reg_date datetime NOT NULL,
+	gongji_content varchar(21000) NOT NULL,
+	gongji_hit int NOT NULL,
+	gongji_cmt_count int NOT NULL,
+	gongji_file_name varchar(30) NULL,
+	gongji_file_size int NULL,
+	gongji_smoke_years date NULL,
+	gongji_public tinyint(1),
+	constraint foreign key (gongji_writer_seq) references member_table (member_seq)
+);
+
+insert into gongji_board values(0, 1, '제목', '글쓴이', now(), '내용', 0, 0, '이미지.jpg', 360, '2022-07-18', 0);
+
+select gongji_seq, gongji_writer_seq, gongji_subject, gongji_writer, gongji_reg_date, gongji_content, gongji_hit, gongji_cmt_count, gongji_file_name, gongji_file_size, TIMESTAMPDIFF(YEAR, '2020-07-18', now()) from gongji_board;
+
+CREATE TABLE free_board (
+	free_seq int NOT NULL primary key auto_increment,
+	free_writer_seq int NOT NULL,
+	free_subject varchar(50) NOT NULL,
+	free_writer varchar(15) NOT NULL,
+	free_reg_date datetime NOT NULL,
+	free_content varchar(21000) NOT NULL,
+	free_hit int NOT NULL,
+	free_cmt_count int NOT NULL,
+	free_file_name varchar(50) NULL,
+	free_file_size int NULL,
+	free_smoke_years date NULL,
+	free_public tinyint(1),
+	constraint foreign key (free_writer_seq) references member_table (member_seq)
+);
+
+insert into free_board values(0, 1, '제목', '글쓴이', now(), '내용', 0, 0, '이미지.jpg', 360, '2022-07-18', 0);
+
+CREATE TABLE review_board (
+	review_seq int NOT NULL primary key auto_increment,
+	review_writer_seq int NOT NULL,
+	review_cigar_seq int NOT NULL,
+	review_subject varchar(50) NOT NULL,
+	review_writer varchar(15) NOT NULL,
+	review_reg_date datetime NOT NULL,
+	review_content varchar(21000) NOT NULL,
+	review_hit int NOT NULL,
+	review_cmt_count int NOT NULL,
+	review_grade int NOT NULL,
+	review_like int NOT NULL,
+	review_dislike int NOT NULL,
+	review_file_name varchar(30) NULL,
+	review_file_size int NULL,
+	review_smoke_years date NULL,
+	constraint foreign key (review_writer_seq) references member_table (member_seq),
+	constraint foreign key (review_cigar_seq) references cigar_list (cigar_seq)
+);
+
+insert into review_board values(0, 1, 1, '제목', '글쓴이', now(), '내용', 0, 0, 5, 0, 0, '파일.jpg', 12, '2022-01-01');
+
+CREATE TABLE cigar_request (
+	request_seq int NOT NULL primary key auto_increment,
+	request_writer_seq int NOT NULL,
+	request_subject varchar(50) NULL,
+	request_writer varchar(15) NULL,
+	request_reg_date datetime NULL,
+	request_content varchar(21000) NULL,
+	request_hit int NULL,
+	request_cmt_count int NULL,
+	request_cigar_brand varchar(16) NULL,
+	request_cigar_name varchar(30) NULL,
+	request_tar decimal(4,2) NULL,
+	request_nicotine decimal(4,2) NULL,
+	request_file_name varchar(30) NULL,
+	request_file_size int NULL,
+	request_smoke_years date NULL,
+	request_public tinyint(1),
+	constraint foreign key (request_writer_seq) references member_table (member_seq)
+);
+
+insert into cigar_request values(0, 1, '제목', '글쓴이', now(), '내용', 0, 0, '말보루', '화이트 후레시', '6', '0.5', '말보루.jpg', 22, '2020-01-01', 0);
+
+CREATE TABLE free_comment (
+	free_cmt_seq int NOT NULL primary key auto_increment,
+	free_pseq int NOT NULL,
+	free_cmt_writer_seq int NOT NULL,
+	free_grp int NOT NULL,
+	free_grps int NOT NULL,
+	free_grpl int NOT NULL,
+	free_cmt_writer varchar(15) NOT NULL,
+	free_cmt_content varchar(2000) NOT NULL,
+	free_cmt_reg_date datetime NOT NULL,
+	constraint foreign key (free_cmt_writer_seq) references member_table (member_seq),
+	constraint foreign key (free_pseq) references free_board (free_seq)
+);
+
+insert into Free_comment values ( 0, 1, 1, 1, 0, 0, 'test', 'test', now());
+
+CREATE TABLE review_comment (
+	review_cmt_seq int NOT NULL primary key auto_increment,
+	review_pseq int NOT NULL,
+	review_cmt_writer_seq int NOT NULL,
+	review_grp int NOT NULL,
+	review_grps int NOT NULL,
+	review_grpl int NOT NULL,
+	review_cmt_writer varchar(15) NOT NULL,
+  	review_cmt_content varchar(21000) NOT NULL,
+	review_cmt_reg_date datetime NOT NULL,
+	constraint foreign key (review_cmt_writer_seq) references member_table (member_seq),
+	constraint foreign key (review_pseq) references review_board (review_seq)
+);
+
+insert into review_comment values ( 0, 1, 1, 1, 0, 0, 'test', 'test', now());
+
+CREATE TABLE gongji_comment (
+	gongji_cmt_seq int NOT NULL primary key auto_increment,
+	gongji_pseq int NOT NULL,
+	gongji_cmt_writer_seq int NOT NULL,
+	gongji_grp int NOT NULL,
+	gongji_grps int NOT NULL,
+	gongji_grpl int NOT NULL,
+	gongji_cmt_writer varchar(15) NOT NULL,
+	gongji_cmt_content varchar(2000) NOT NULL,
+	gongji_cmt_reg_date datetime NOT NULL,
+	constraint foreign key (gongji_cmt_writer_seq) references member_table (member_seq),
+	constraint foreign key (gongji_pseq) references gongji_board (gongji_seq)
+);
+
+insert into gongji_comment values ( 0, 1, 1, 1, 0, 0, 'test', 'test', now());
+
+CREATE TABLE request_comment (
+	request_cmt_seq int NOT NULL primary key auto_increment,
+	request_pseq int NOT NULL,
+	request_cmt_writer_seq int NOT NULL,
+	request_grp int NOT NULL,
+	request_grps int NOT NULL,
+	request_grpl int NOT NULL,
+	request_cmt_writer varchar(15) NOT NULL,
+	request_cmt_content varchar(2000) NOT NULL,
+	request_cmt_reg_date datetime NOT NULL,
+	constraint foreign key (request_cmt_writer_seq) references member_table (member_seq),
+	constraint foreign key (request_pseq) references cigar_request (request_seq)
+);
+
+insert into request_comment values ( 0, 1, 1, 1, 0, 0, 'test', 'test', now());
+
+create table cigar_map_table(
+	map_seq int primary key auto_increment, 
+	lat decimal(12, 8),
+	lng decimal(12, 8),
+	smoking_area_title varchar(20),
+	smoking_area_address varchar(100),
+	smoking_area_img varchar(100)
+);

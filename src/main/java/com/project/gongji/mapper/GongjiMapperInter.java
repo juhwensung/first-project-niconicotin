@@ -40,6 +40,11 @@ public interface GongjiMapperInter {
 			+ "where gongji_seq=#{gongji_seq}")
 	int gongjiModify_ok(GongjiTO to);
 	
+	@Update("update gongji_board set "
+			+ "gongji_subject=#{gongji_subject}, gongji_content=#{gongji_content}"
+			+ "where gongji_seq=#{gongji_seq}")
+	int gongjiModify_Ok_NoImage(GongjiTO to);
+	
 	@Select("select gongji_seq, gongji_writer_seq, gongji_subject, gongji_writer, gongji_reg_date, gongji_content, gongji_hit, gongji_cmt_count, "
 			+ "gongji_file_name, gongji_file_size, gongji_smoke_years, gongji_public from gongji_board "
 			+ "where gongji_seq=#{gongji_seq}")

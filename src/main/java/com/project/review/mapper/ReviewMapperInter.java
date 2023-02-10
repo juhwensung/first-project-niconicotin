@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.project.review.to.ReviewDislikeCheckTO;
+import com.project.review.to.ReviewLikeCheckTO;
 import com.project.review.to.ReviewTO;
 
 @Mapper
@@ -53,4 +55,34 @@ public interface ReviewMapperInter {
 	
 	@Delete("delete from review_board where review_seq=#{review_seq}")
 	int reviewDelete_ok(ReviewTO to);
+	
+	@Update("update review_board set review_like = review_like+1 where review_seq = #{review_seq}")
+	int reviewLike_Up(ReviewTO to);
+	
+	@Update("update review_board set review_like = review_like-1 where review_seq = #{review_seq}")
+	int reviewLike_Down(ReviewTO to);
+	
+	@Update("update review_board set review_dislike = review_dislike+1 where review_seq = #{review_seq}")
+	int reviewDislike_Up(ReviewTO to);
+	
+	@Update("update review_board set review_dislike = review_dislike-1 where review_seq = #{review_seq}")
+	int reviewDislike_Down(ReviewTO to);
+	
+	@Select("select count(like_users_seq) like_users_seq, count(like_board_seq) like_board_seq from like_check_table where like_users_seq=#{like_users_seq}  and like_board_seq=#{like_board_seq};")
+	ReviewLikeCheckTO reviewLike_Check(ReviewLikeCheckTO likeTO);
+	
+	@Select("select count(dislike_users_seq) dislike_users_seq, count(dislike_board_seq) dislike_board_seq from dislike_check_table where dislike_users_seq=#{dislike_users_seq} and dislike_board_seq=#{dislike_board_seq};")
+	ReviewDislikeCheckTO reviewDislike_Check(ReviewDislikeCheckTO dislikeTO);
+	
+	@Insert("insert into like_check_table values (#{memberSeq}, #{pseq})")
+	int reviewLike_Insert(int memberSeq , int pseq);
+	
+	@Insert("insert into dislike_check_table values (#{memberSeq}, #{pseq})")
+	int reviewDislike_Insert(int memberSeq , int pseq);
+	
+	@Delete("delete from like_check_table where #{memberSeq} and #{pseq}")
+	int reviewLike_Delete(int memberSeq , int pseq);
+	
+	@Delete("delete from dislike_check_table where #{memberSeq} and #{pseq}")
+	int reviewDislike_Delete(int memberSeq , int pseq);
 }

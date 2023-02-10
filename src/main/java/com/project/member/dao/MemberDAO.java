@@ -30,7 +30,7 @@ public class MemberDAO {
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	public MemberTO login_Ok(MemberTO to) throws Exception {
 		to = memberMapperInter.login_Ok(to);
 		return to;
@@ -40,7 +40,23 @@ public class MemberDAO {
 		to = memberMapperInter.search_Id(to);
 		return to;
 	}
+	
+	public int member_Id_Check(MemberTO to) {
+		int flag = 2;
+		System.out.println(to.getEmail());
+		to = memberMapperInter.member_Id_Check(to);
 		
+		if(to.getEmail().equals("0")) {
+			System.out.println(to.getEmail());
+			flag = 0;
+			System.out.println("사용가능한 id다 이거야");
+		} else {
+			flag = 1;
+			System.out.println("중복 ID");
+		};
+		return flag;
+	}
+	
 	public MemberTO member_View(MemberTO to) {
 		to = memberMapperInter.member_View(to);
 		return to;
@@ -52,12 +68,12 @@ public class MemberDAO {
 		
 		try {
 			if(to.getEmail() != null) {
-				String toName = "테스터";
-				String subject = "테스트 제목";
-				String content = "<h1>테스트 내용<h1>";
+				String toName = to.getName();
+				String subject = "비밀번호 변경 이메일입니다.";
+				String content = "<a href='http://localhost:8080/login.do?meber_seq="+to.getMember_seq()+"'>이동하기</a>";
 				mimeMessage.addRecipient(RecipientType.TO, new InternetAddress(to.getEmail(), toName, "utf-8"));
 				mimeMessage.setSubject(subject, "utf-8");
-				mimeMessage.setText(content, "utf-8", "html");
+				mimeMessage.setText(content, "utf-8", "html");	
 				javaMailSender.send(mimeMessage);
 				System.out.println("전송이 완료 되었습니다");
 			} else { 
@@ -77,12 +93,16 @@ public class MemberDAO {
 				// TODO: handle exception
 				e.printStackTrace();
 			}
-		
 		return to;
 	}
 	
-	public void mailSender2(MemberTO to) {
-
+	public int mail_password_ok(MemberTO to) {
+		int flag = 1;
+		int result = memberMapperInter.mail_password_ok(to);
+		if(result == 1 ) {
+			flag = 0;
+		}
+		return flag;
 	}
 	
 	public ArrayList<FreeBoardTO> free_board_lists(FreeBoardTO fto) {
@@ -153,5 +173,4 @@ public class MemberDAO {
 		
 		return flag;
 	}
-	
 }

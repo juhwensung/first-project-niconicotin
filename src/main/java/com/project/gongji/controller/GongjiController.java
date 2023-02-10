@@ -38,20 +38,22 @@ public class GongjiController {
 			JSONObject obj = new JSONObject();
 			obj.put("gongji_seq", to2.getGongji_seq());
 			obj.put("gongji_writer_seq", to2.getGongji_writer_seq());
-			obj.put("gongji_suject", to2.getGongji_subject());
+			obj.put("gongji_subject", to2.getGongji_subject());
 			obj.put("gongji_writer", to2.getGongji_writer());
-			obj.put("gongji_reg_date", to2.getGongji_reg_date());
+			obj.put("gongji_reg_date", to2.getGongji_reg_date().toString());
 			obj.put("gongji_content", to2.getGongji_content());
 			obj.put("gongji_hit", to2.getGongji_hit());
 			obj.put("gongji_cmt_count", to2.getGongji_cmt_count());
 			obj.put("gongji_file_name", to2.getGongji_file_name());
 			obj.put("gongji_file_size", to2.getGongji_file_size());
-			obj.put("gongji_smoke_years", to2.getGongji_smoke_years());
+			obj.put("gongji_smoke_years", to2.getGongji_smoke_years().toString());
 			obj.put("gongji_public", to2.isGongji_public());
 			
 			gongjiLists.add(obj);
 		}
-		mav.addObject("gongjiLists", gongjiLists);
+		JSONObject obj2 = new JSONObject();
+		obj2.put("gongjiLists", gongjiLists);
+		mav.addObject("obj2", obj2);
 		mav.setViewName("gongjiViews/gongjiList");
 		return mav;
 	}
