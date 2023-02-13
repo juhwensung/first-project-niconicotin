@@ -27,7 +27,7 @@ public interface RequestCigarMapperInter {
 	RequestCigarTO requestView(RequestCigarTO to);
 	
 	@Insert("insert into cigar_request values (0, #{request_writer_seq}, #{request_subject}, #{request_writer}, now(), #{request_content}, 0, 0, "
-			+ "#{request_cigar_brand}, #{request_cigar_name}, #{request_tar}, #{request_nicotine}, #{request_file_name}, #{request_file_size}, now());")
+			+ "#{request_cigar_brand}, #{request_cigar_name}, #{request_tar}, #{request_nicotine}, #{request_file_name}, #{request_file_size}, #{request_smoke_years})")
 	int requestWirte_ok(RequestCigarTO to);
 
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date, request_content, request_hit, request_cmt_count, "
@@ -45,7 +45,7 @@ public interface RequestCigarMapperInter {
 			+ "from cigar_request where request_seq = #{request_seq}")
 	RequestCigarTO requestDelete(RequestCigarTO to);
 	
-	@Delete("delete from cigar_request where request_seq=#{request_seq}")
+	@Delete("delete from cigar_request where request_seq=#{request_seq} and request_writer_seq=#{request_writer_seq}")
 	int requestDelete_ok(RequestCigarTO to);
 	
 }

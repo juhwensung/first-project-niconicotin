@@ -1,5 +1,7 @@
 package com.project.cigar.to;
 
+import java.sql.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,8 @@ public class CigarTO {
 	private String cigar_hash_tag;
 	private String cigar_content;
 	private double cigar_total_grade;
+	private Date cigar_reg_date;
+	private int cigar_hit;
 }
 /*
 insert into cigar_list values 

@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.project.gongji.dao.GongjiCommentDAO;
@@ -28,7 +29,7 @@ public class GongjiController {
 	@Autowired
 	private GongjiCommentDAO cmtDAO;
 	
-	@RequestMapping("gongji/list.do")
+	@RequestMapping(value = "gongji/list.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiList(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 
@@ -58,7 +59,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/view.do")
+	@RequestMapping(value = "gongji/view.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiView(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -108,14 +109,14 @@ public class GongjiController {
 		return mav;
 	}
 
-	@RequestMapping("gongji/write.do")
+	@RequestMapping(value = "gongji/write.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiWrite(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("gongjiViews/gongjiWrite");
 		return mav;
 	}
 	
-	@RequestMapping("gongji/write_ok.do")
+	@RequestMapping(value = "gongji/write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiWriteOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -140,7 +141,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/modify.do")
+	@RequestMapping(value = "gongji/modify.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiModify(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -164,7 +165,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/modify_ok.do")
+	@RequestMapping(value = "gongji/modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiModifyOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -184,7 +185,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/delete.do")
+	@RequestMapping(value = "gongji/delete.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiDelete(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -208,7 +209,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/delete_ok.do")
+	@RequestMapping(value = "gongji/delete_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjideleteOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiTO to = new GongjiTO();
@@ -219,7 +220,31 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/parent_cmt_write.do")
+	//@RequestMapping(value = "api/gongjiCommentLists.do", method = {RequestMethod.GET, RequestMethod.POST} )
+	public JSONArray gongjiCommentList(HttpServletRequest request, HttpServletResponse response) {
+		JSONArray gongjiCommentLists = new JSONArray();
+		GongjiCommentTO cmtTO = new GongjiCommentTO();
+		cmtTO.setGongji_pseq(Integer.parseInt(request.getParameter("gongji_pseq")));
+		ArrayList<GongjiCommentTO> listCmtTO = cmtDAO.gongjiCommentList(cmtTO);
+		for(GongjiCommentTO cmtTO2 : listCmtTO) {
+			JSONObject obj = new JSONObject();
+			obj.put("gongji_cmt_seq", cmtTO2.getGongji_cmt_seq());
+			obj.put("gongji_pseq", cmtTO2.getGongji_pseq());
+			obj.put("gongji_cmt_writer_seq", cmtTO2.getGongji_cmt_writer_seq());
+			obj.put("gongji_grp", cmtTO2.getGongji_grp());
+			obj.put("gongji_grps", cmtTO2.getGongji_grps());
+			obj.put("gongji_grpl", cmtTO2.getGongji_grpl());
+			obj.put("gongji_cmt_writer", cmtTO2.getGongji_cmt_writer());
+			obj.put("gongji_cmt_content", cmtTO2.getGongji_cmt_content());
+			obj.put("gongji_cmt_reg_date", cmtTO2.getGongji_cmt_reg_date());
+			
+			gongjiCommentLists.add(obj);
+		}
+		
+		return gongjiCommentLists;
+	}
+	
+	@RequestMapping(value = "gongji/parent_cmt_write.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiParentCmtWrite(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		HttpSession session = request.getSession();
@@ -240,7 +265,7 @@ public class GongjiController {
 	}
 	
 	
-	@RequestMapping("gongji/cmt_write.do")
+	@RequestMapping(value = "gongji/cmt_write.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtWrite(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		HttpSession session = request.getSession();
@@ -259,7 +284,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/cmt_write_ok.do")
+	@RequestMapping(value = "gongji/cmt_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtWriteOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiCommentTO to = new GongjiCommentTO();
@@ -278,7 +303,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/cmt_modify.do")
+	@RequestMapping(value = "gongji/cmt_modify.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtModify(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiCommentTO to = new GongjiCommentTO();
@@ -299,7 +324,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/cmt_modify_ok.do")
+	@RequestMapping(value = "gongji/cmt_modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtModifyOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiCommentTO to = new GongjiCommentTO();
@@ -318,7 +343,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/cmt_delete.do")
+	@RequestMapping(value = "gongji/cmt_delete.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtDelete(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiCommentTO to = new GongjiCommentTO();
@@ -339,7 +364,7 @@ public class GongjiController {
 		return mav;
 	}
 	
-	@RequestMapping("gongji/cmt_delete_ok.do")
+	@RequestMapping(value = "gongji/cmt_delete_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView gongjiCmtDeleteOk(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
 		GongjiCommentTO to = new GongjiCommentTO();

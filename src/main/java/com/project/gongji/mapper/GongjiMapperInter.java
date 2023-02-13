@@ -27,7 +27,7 @@ public interface GongjiMapperInter {
 	GongjiTO gongjiView(GongjiTO to);
 	
 	@Insert("insert into gongji_board values (0, #{gongji_writer_seq}, #{gongji_subject}, #{gongji_writer},  now(), #{gongji_content}, "
-			+ "0, 0, #{gongji_file_name}, #{gongji_file_size}, now(), #{gongji_public})")
+			+ "0, 0, #{gongji_file_name}, #{gongji_file_size}, #{gongji_smoke_years}, #{gongji_public})")
 	int gongjiWirte_ok(GongjiTO to);
 
 	@Select("select gongji_seq, gongji_writer_seq, gongji_subject, gongji_writer, gongji_reg_date, gongji_content, gongji_hit, gongji_cmt_count, "
@@ -50,6 +50,6 @@ public interface GongjiMapperInter {
 			+ "where gongji_seq=#{gongji_seq}")
 	GongjiTO gongjiDelete(GongjiTO to);
 	
-	@Delete("delete from gongji_board where gongji_seq=#{gongji_seq}")
+	@Delete("delete from gongji_board where gongji_seq=#{gongji_seq} and gongji_writer_seq=#{gongji_writer_seq}")
 	int gongjiDelete_ok(GongjiTO to);
 }

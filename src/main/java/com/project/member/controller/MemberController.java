@@ -67,7 +67,7 @@ public class MemberController {
 
 		result.put("member_data", request.getParameter("email"));
 		mav.addObject("to", to);
-		mav.setViewName( "memberViews/loginOk" );
+		mav.setViewName( "memberViews/login_ok" );
 		return mav;
 	}
 	
@@ -75,7 +75,7 @@ public class MemberController {
 	@RequestMapping(value = "/login_complete.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView login_complete(HttpServletRequest request, HttpServletResponse response) {		
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/loginComplete" );
+		mav.setViewName( "memberViews/login_complete" );
 		return mav;
 	}
 	
@@ -84,7 +84,7 @@ public class MemberController {
 	@RequestMapping(value = "/logout_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView logout_ok(HttpServletRequest request, HttpServletResponse response) {		
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/logoutOk" );
+		mav.setViewName( "memberViews/logout_ok" );
 		return mav;
 	}
 	
@@ -92,7 +92,7 @@ public class MemberController {
 	@RequestMapping(value = "/id_search.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView id_Seach(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/idSearch" );
+		mav.setViewName( "memberViews/id_search" );
 		return mav;
 	}
 		
@@ -115,7 +115,7 @@ public class MemberController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("id_search_ok_obj", id_search_ok_obj);
 		mav.addObject("to", to);
-		mav.setViewName( "memberViews/idSearchOk" );
+		mav.setViewName( "memberViews/id_search_ok" );
 		return mav;
 	}
 	
@@ -193,7 +193,7 @@ public class MemberController {
 		
 		
 		mav.addObject("flag", flag);
-		mav.setViewName( "memberViews/memberOk" );
+		mav.setViewName( "memberViews/member_ok" );
 		
 		member_Ok_Obj.put("flag", flag);
 		//System.out.println(result);

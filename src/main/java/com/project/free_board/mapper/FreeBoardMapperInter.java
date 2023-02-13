@@ -28,10 +28,11 @@ public interface FreeBoardMapperInter {
 	
 	@Insert("insert into free_board values"
 			+ "(0, #{free_writer_seq}, #{free_subject}, #{free_writer}, now(), #{free_content}, 0, 0, #{free_file_name},"
-			+ " #{free_file_size}, #{free_smoke_years}, #{free_public})")
+			+ " #{free_file_size}, now(), #{free_public})")
 	int freeWrite_Ok(FreeBoardTO to);
 	
-	@Select("select free_seq, free_writer_seq, free_subject, free_writer, free_reg_date, free_content, free_hit, free_cmt_count, free_file_size, free_file_name, free_smoke_years, free_public "
+	@Select("select free_seq, free_writer_seq, free_subject, free_writer, free_reg_date, free_content, free_hit, free_cmt_count, "
+			+ "free_file_size, free_file_name, free_smoke_years, free_public "
 			+ "from free_board where free_seq=#{free_seq}")
 	FreeBoardTO freeModify(FreeBoardTO to);
 	
@@ -49,7 +50,7 @@ public interface FreeBoardMapperInter {
 			+ "from free_board where free_seq=#{free_seq}")
 	FreeBoardTO freeDelete(FreeBoardTO to);
 	
-	@Delete("delete from free_board where free_seq=#{free_seq}")
+	@Delete("delete from free_board where free_seq=#{free_seq} and free_writer_seq=#{free_writer_seq}")
 	int freeDelete_Ok(FreeBoardTO to);
 	
 	@Delete("delete from free_comment where free_pseq=#{free_seq}")

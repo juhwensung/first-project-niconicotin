@@ -46,7 +46,7 @@ public interface CigarMapperInter {
 			+ "from cigar_list where cigar_seq = #{cigar_seq}")
 	CigarTO cigarDelete(CigarTO to);
 	
-	@Delete("delete from cigar_list where cigar_seq=#{cigar_seq}")
+	@Delete("delete from cigar_list where cigar_seq=#{cigar_seq} and cigar_writer_seq=#{cigar_writer_seq}")
 	int cigarDelete_ok(CigarTO to);
 	
 }

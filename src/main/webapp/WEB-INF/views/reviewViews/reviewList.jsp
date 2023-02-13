@@ -4,5 +4,6 @@
 <%
 
 	JSONArray result = (JSONArray)request.getAttribute("reviewLists");
+	out.println("테스트입니다.");
 	out.println(result);
 %>

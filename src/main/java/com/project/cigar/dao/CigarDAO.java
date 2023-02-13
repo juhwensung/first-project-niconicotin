@@ -60,6 +60,11 @@ public class CigarDAO {
 		return listTO;
 	}
 	
+	public ArrayList<CigarTO> cigarListMin(){
+		ArrayList<CigarTO> cigarLists = cigarMapperInter.cigarList();
+		return cigarLists;
+	}
+	
 	public CigarTO cigarView(CigarTO to) {
 		int res = cigarMapperInter.cigarView_hit(to);
 		System.out.println("조회수 상승 값 : " + res);
