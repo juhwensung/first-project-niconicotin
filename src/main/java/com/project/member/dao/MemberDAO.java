@@ -166,7 +166,6 @@ public class MemberDAO {
 	public int member_Delete_Ok(MemberTO to) {
 		int flag =1;
 		int result = memberMapperInter.member_delete_ok(to);
-		
 		if(result == 1) {
 			flag = 0;
 		}

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +14,12 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.project.free_board.to.FreeBoardTO;
 import com.project.gongji.to.GongjiTO;
@@ -25,133 +28,129 @@ import com.project.member.to.MemberTO;
 import com.project.requestCigar.to.RequestCigarTO;
 import com.project.review.to.ReviewTO;
 
-@Controller
+@RestController
 public class MemberController {
 	@Autowired
 	private MemberDAO dao;
 	
 	//로그인
-	@RequestMapping(value = {"/login.do"} ,method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/login" );
-		return mav;
-	}
+//	@RequestMapping(value = {"/login.do"} ,method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {		
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/login" );
+//		request.getSession();
+//		return mav;
+//	}
 	
 	//로그인 확인
-	@RequestMapping(value = "/login_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView login_ok(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "api/loginOk.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject login_ok(@RequestBody Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println(paramMap.get("userEmail"));
+		System.out.println(paramMap.get("password"));
 		MemberTO to = new MemberTO();
-		JSONObject result = new JSONObject();
-		ModelAndView mav = new ModelAndView();
+		JSONObject loginOk = new JSONObject();
 		HttpSession session = request.getSession();
 		
-		to.setEmail(request.getParameter("email"));
-		to.setPassword(request.getParameter("password"));
+		to.setEmail((String)paramMap.get("userEmail"));
+		to.setPassword((String)paramMap.get("password"));
 		to = dao.login_Ok(to);
-		
+		//System.out.println(to);
 		try {
 			session.setAttribute("emailss", to.getEmail());
 			session.setAttribute("member_seq", to.getMember_seq());
 			session.setAttribute("name", to.getName());
-			session.setAttribute("address", to.getAddress());
 			session.setAttribute("phone", to.getPhone());
 			session.setAttribute("nickname", to.getNickname());
 			session.setAttribute("smoke_years", to.getSmoke_years());
-			session.setAttribute("prefer_cigar", to.getPrefer_cigar());
 			session.setAttribute("birthday", to.getBirthday());
 		} catch(NullPointerException e) {
 			System.err.println("NULL! : " + e.getMessage());
 		}
 		//System.out.println(result);
-
-		result.put("member_data", request.getParameter("email"));
-		mav.addObject("to", to);
-		mav.setViewName( "memberViews/login_ok" );
-		return mav;
+		//login_ok.put("member_data", request.getParameter("email"));
+		loginOk.put("emailss", session.getAttribute("emailss"));
+		loginOk.put("member_seq", session.getAttribute("member_seq"));
+		loginOk.put("name", session.getAttribute("name"));
+		loginOk.put("phone", session.getAttribute("phone"));
+		loginOk.put("nickname", session.getAttribute("nickname"));
+		loginOk.put("smoke_years", session.getAttribute("smoke_years"));
+		loginOk.put("birthday", session.getAttribute("birthday"));
+		return loginOk;
 	}
 	
-	// 로그인 성공시 완료 화면
-	@RequestMapping(value = "/login_complete.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView login_complete(HttpServletRequest request, HttpServletResponse response) {		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/login_complete" );
-		return mav;
-	}
-	
-	
-	//로그아웃
-	@RequestMapping(value = "/logout_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView logout_ok(HttpServletRequest request, HttpServletResponse response) {		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/logout_ok" );
-		return mav;
-	}
-	
-	//id찾기
-	@RequestMapping(value = "/id_search.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView id_Seach(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/id_search" );
-		return mav;
-	}
+//	// 로그인 성공시 완료 화면
+//	@RequestMapping(value = "/login_complete.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView login_complete(HttpServletRequest request, HttpServletResponse response) {		
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/loginComplete" );
+//		return mav;
+//	}
+//	
+//	
+//	//로그아웃
+//	@RequestMapping(value = "/logout_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView logout_ok(HttpServletRequest request, HttpServletResponse response) {		
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/logoutOk" );
+//		return mav;
+//	}
+//	
+//	//id찾기
+//	@RequestMapping(value = "/id_search.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView id_Seach(HttpServletRequest request, HttpServletResponse response) {
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/idSearch" );
+//		return mav;
+//	}
 		
-	@RequestMapping(value = "/id_search_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView id_Search_Ok(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "api/id_search_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject id_Search_Ok(@RequestBody Map<String, Object> paramMap ,HttpServletRequest request, HttpServletResponse response) {
 		MemberTO to = new MemberTO();
-		JSONObject id_search_ok_obj = new JSONObject();
+		JSONObject id_search_ok = new JSONObject();
 		try {
-			to.setBirthday(Date.valueOf(request.getParameter("birthday")));
-			to.setName(request.getParameter("name"));
+			to.setBirthday(Date.valueOf((String)paramMap.get("birthday")));
+			to.setName((String)paramMap.get("name"));
 			to.setPhone(request.getParameter("phoneNum1") + request.getParameter("phoneNum2") + request.getParameter("phoneNum3"));
 //			System.out.println("con:"+ to.getPhoneNum());
 //			System.out.println("con:"+to.getEmail());
 		} catch (NullPointerException e) {
 			System.err.println("NULL!");
 		}
-		
 		to = dao.id_Search(to);
-		id_search_ok_obj.put("email", to.getEmail());
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("id_search_ok_obj", id_search_ok_obj);
-		mav.addObject("to", to);
-		mav.setViewName( "memberViews/id_search_ok" );
-		return mav;
+		id_search_ok.put("email", to.getEmail());
+		return id_search_ok;
 	}
 	
-	// 회원가입
-	@RequestMapping(value = "/member.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/member" );
-		return mav;
-	}
+//	// 회원가입
+//	@RequestMapping(value = "/member.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView member(HttpServletRequest request, HttpServletResponse response) {
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/member" );
+//		return mav;
+//	}
 		
 	// 회원가입 확인
 	@RequestMapping(value = "/member_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_ok(HttpServletRequest request, HttpServletResponse response) {
+	public JSONObject member_ok(@RequestBody Map<String, Object> paramMap , HttpServletRequest request, HttpServletResponse response) {
 		MemberTO to = new MemberTO();
 		JSONObject member_Ok_Obj = new JSONObject();
-		ModelAndView mav = new ModelAndView();
 		int flag = 0;
 		
-		to.setEmail(request.getParameter("email"));
-		to.setPassword(request.getParameter("password"));
-		to.setName(request.getParameter("name"));
-		to.setAddress(request.getParameter("address"));
+		to.setEmail((String)paramMap.get("email"));
+		to.setPassword((String)paramMap.get("password"));
+		to.setName((String)paramMap.get("name"));
 		to.setPhone(request.getParameter("phoneNum1") + request.getParameter("phoneNum2") + request.getParameter("phoneNum3"));
-		if(request.getParameter("nickname") != null ) {
-		to.setNickname(request.getParameter("nickname"));
+		if((String)paramMap.get("nickname") != null ) {
+		to.setNickname((String)paramMap.get("nickname"));
 		} else {
-			to.setNickname(request.getParameter("email"));
+			to.setNickname((String)paramMap.get("email"));
 		}
-		to.setSmoke_years(Date.valueOf(request.getParameter("smoke_years")));
-		to.setPrefer_cigar(request.getParameter("prefer_cigar"));
-		to.setBirthday(Date.valueOf(request.getParameter("birthday")));
+		to.setSmoke_years(Date.valueOf((String)paramMap.get("somke_years")));
+		to.setBirthday(Date.valueOf((String)paramMap.get("birthday")));
 		//int flag = dao.member_ok(to);
 		// --- 주민번호 검사 ---
-		String jumin_Front = request.getParameter("jumin_front");
-		String jumin_Back = request.getParameter("jumin_back");
+		String jumin_Front = (String)paramMap.get("jumin_front");
+		String jumin_Back = (String)paramMap.get("jumin_back");
 		String jumin = jumin_Front.trim() + jumin_Back.trim();
 				
 		int[] bits = {2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5};
@@ -185,55 +184,58 @@ public class MemberController {
 				System.out.println("성인 아님");
 				flag = 3;
 			} else {
+				
 				flag = dao.member_Ok(to);
 			}
 		} else {
 			flag = 2;
 		}
 		
-		
-		mav.addObject("flag", flag);
-		mav.setViewName( "memberViews/member_ok" );
-		
 		member_Ok_Obj.put("flag", flag);
+		System.out.println();
 		//System.out.println(result);
-		return mav;
+		return member_Ok_Obj;
 	}
 	
 	//회원가입시 아이디 중복 검사
 	@RequestMapping(value = "/member_id_check.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView memberIdCheck(HttpServletRequest request, HttpServletRequest response) {
-		ModelAndView mav = new ModelAndView();
+	public JSONObject memberIdCheck(@RequestBody Map<String, Object> paramMap ,HttpServletRequest request, HttpServletRequest response) {
+		JSONObject memberIdCheck = new JSONObject();
 		MemberTO to = new MemberTO();
-		to.setEmail(request.getParameter("email"));
+		to.setEmail((String)paramMap.get("email"));
 		int flag = dao.member_Id_Check(to);
-		mav.setViewName( "memberViews/memberIdCheck" );
-		return mav;
+		
+		memberIdCheck.put("flag", flag);
+		return memberIdCheck;
 	}
+	
 	// 회원정보 보기
-	@RequestMapping(value = "/member_view.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_View(HttpServletRequest request, HttpServletRequest response) {
+	@RequestMapping(value = "api/memberview.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject member_View(@RequestBody Map<String, Object> paramMap ,HttpServletRequest request, HttpServletRequest response) {
 		MemberTO to = new MemberTO();
 		ReviewTO rto = new ReviewTO();
 		FreeBoardTO fto = new FreeBoardTO();
 		GongjiTO gto= new GongjiTO();
 		RequestCigarTO requestTO = new RequestCigarTO();
-
-		ModelAndView mav = new ModelAndView();
-		JSONObject member_View_Obj = new JSONObject();
 		
 		HttpSession session = request.getSession();
-		fto.setFree_writer_seq((int)session.getAttribute("member_seq"));	
-		rto.setReview_writer_seq((int)session.getAttribute("member_seq"));
-		gto.setGongji_writer_seq((int)session.getAttribute("member_seq"));
-		requestTO.setRequest_writer_seq((int)session.getAttribute("member_seq"));
+//		fto.setFree_writer_seq((int)session.getAttribute("member_seq"));	
+//		rto.setReview_writer_seq((int)session.getAttribute("member_seq"));
+//		gto.setGongji_writer_seq((int)session.getAttribute("member_seq"));
+//		requestTO.setRequest_writer_seq((int)session.getAttribute("member_seq"));
+
+		fto.setFree_writer_seq(10006);	
+		rto.setReview_writer_seq(10006);
+		gto.setGongji_writer_seq(10006);
+		requestTO.setRequest_writer_seq(10006);
 		
 		ArrayList<FreeBoardTO> freeLists = dao.free_board_lists(fto);
 		ArrayList<ReviewTO> reviewLists = dao.review_board_lists(rto);
 		ArrayList<GongjiTO> gongjiLists = dao.gongji_board_lists(gto);
 		ArrayList<RequestCigarTO> requestLists = dao.request_board_lists(requestTO);
 
-		to.setMember_seq((int)session.getAttribute("member_seq"));
+//		to.setMember_seq((int)session.getAttribute("member_seq"));
+		to.setMember_seq(10006);
 		to = dao.member_View(to);
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -241,20 +243,17 @@ public class MemberController {
 		String now = format.format(System.currentTimeMillis());
 		int smokeDiff = (Integer.parseInt(now) - Integer.parseInt(smokeYears)) /10000;
 		
-		System.out.println(smokeDiff);
-
-		JSONObject memberInfoObj = new JSONObject();
+		JSONObject member_View_Obj = new JSONObject();
+		JSONArray memberInfoObj = new JSONArray();
 		member_View_Obj.put("member_seq", to.getMember_seq());
 		member_View_Obj.put("email", to.getEmail());
 		member_View_Obj.put("name", to.getName());
 		member_View_Obj.put("nickname", to.getNickname());
-		member_View_Obj.put("address", to.getAddress());
 		member_View_Obj.put("phoneNum", to.getPhone());
 		member_View_Obj.put("smoke_years", smokeDiff);
-		member_View_Obj.put("prefer_cigar", to.getPrefer_cigar());
 		member_View_Obj.put("sign_date", to.getSign_date().toString());
 		member_View_Obj.put("birthday", to.getBirthday().toString());
-		memberInfoObj.put("memberInfoObj", member_View_Obj);
+		memberInfoObj.add(member_View_Obj);
 		
 		JSONArray jsonArrayReview = new JSONArray();
 		for(ReviewTO reviewTO : reviewLists) {
@@ -266,10 +265,6 @@ public class MemberController {
 		jsonArrayReview.add(obj_review);
 		}
 		
-		JSONObject review_list = new JSONObject();
-		review_list.put("review_list", jsonArrayReview);
-		//System.out.println(reviewLists.size());
-		
 		JSONArray jsonArrayFree = new JSONArray();
 		for(FreeBoardTO freeTo : freeLists) {
 		JSONObject obj_free = new JSONObject();
@@ -279,9 +274,6 @@ public class MemberController {
 		obj_free.put("free_writer", freeTo.getFree_writer());
 		jsonArrayFree.add(obj_free);
 		}
-		
-		JSONObject free_list = new JSONObject();
-		free_list.put("free_list", jsonArrayFree);
 		
 		JSONArray jsonArrayGongji = new JSONArray();
 		for(GongjiTO gongjiTO : gongjiLists) {
@@ -293,9 +285,6 @@ public class MemberController {
 		jsonArrayGongji.add(obj_Gongji);
 		}
 		
-		JSONObject gongji_list = new JSONObject();
-		gongji_list.put("gongji_list", jsonArrayGongji);
-		
 		JSONArray jsonArrayRequest = new JSONArray();
 		for(RequestCigarTO requestsTO : requestLists) {
 		JSONObject obj_Request = new JSONObject();
@@ -306,30 +295,22 @@ public class MemberController {
 		jsonArrayRequest.add(obj_Request);
 		}
 		
-		JSONObject request_list = new JSONObject();
-		request_list.put("request_list", jsonArrayRequest);
+		JSONObject memberview = new JSONObject();
+		memberview.put("request_list", jsonArrayRequest);
+		memberview.put("gongji_list", jsonArrayGongji);
+		memberview.put("free_list", jsonArrayFree);
+		memberview.put("review_list", jsonArrayReview);
+		memberview.put("memberInfoObj", memberInfoObj);
 		
-		//System.out.println(member_View_Obj);
-		//System.out.println("controller : "+to.getPhone());
-		
-		mav.addObject("reviewList", review_list);
-		mav.addObject("freeList", free_list);
-		mav.addObject("gongjiList", gongji_list);
-		mav.addObject("requestList", request_list);
-		
-		mav.addObject("memberInfo", memberInfoObj);
-		mav.addObject("to", to);
-		mav.addObject("smoke_years", smokeDiff);
-		mav.setViewName( "memberViews/memberView" );
-		return mav;
+		System.out.println(memberview);
+		return memberview;
 	}
 	
 	// 회원정보 수정
-	@RequestMapping(value = "/member_modify.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_modify(HttpServletRequest request, HttpServletRequest response) {
+	@RequestMapping(value = "api/member_modify.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject member_modify(HttpServletRequest request, HttpServletRequest response) {
 		MemberTO to = new MemberTO();
 		HttpSession session = request.getSession();
-		ModelAndView mav = new ModelAndView();
 		JSONObject member_Modify_Obj = new JSONObject();
 		
 		to.setMember_seq((int)session.getAttribute("member_seq"));
@@ -338,123 +319,101 @@ public class MemberController {
 		member_Modify_Obj.put("email", to.getEmail());
 		member_Modify_Obj.put("name", to.getName());
 		member_Modify_Obj.put("nickname", to.getNickname());
-		member_Modify_Obj.put("address", to.getAddress());
 		member_Modify_Obj.put("phoneNum", to.getPhone());
 		member_Modify_Obj.put("smoke_years", to.getSmoke_years());
-		member_Modify_Obj.put("prefer_cigar", to.getPrefer_cigar());
 		member_Modify_Obj.put("sign_date", to.getSign_date());
 		member_Modify_Obj.put("birthday", to.getBirthday());
-
 		System.out.println(member_Modify_Obj);
-		
-		mav.addObject("member_Modify_Obj", member_Modify_Obj);
-		mav.addObject("to", to);
-		mav.setViewName( "memberViews/memberModify" );
-		return mav;
+
+		return member_Modify_Obj;
 	}
 	
 	// 회원정보 수정 확인
-	@RequestMapping(value = "/member_modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_modify_ok(HttpServletRequest request, HttpServletRequest response) {
+	@RequestMapping(value = "api/member_modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject member_modify_ok(@RequestBody Map<String, Object> paramMap, HttpServletRequest request, HttpServletRequest response) {
 		MemberTO to = new MemberTO();
 		HttpSession session = request.getSession();
-		ModelAndView mav = new ModelAndView();
-		JSONObject member_Modify_Ok_Obj = new JSONObject();		
+		JSONObject member_modify_ok = new JSONObject();
 		to.setMember_seq((int)session.getAttribute("member_seq"));
-		to.setName(request.getParameter("name"));
-		to.setAddress(request.getParameter("address"));
-		to.setPhone(request.getParameter("phoneNum"));
-		to.setNickname(request.getParameter("nickname"));
-		to.setSmoke_years(Date.valueOf(request.getParameter("smoke_years")));
-		to.setPrefer_cigar(request.getParameter("prefer_cigar"));
-		to.setBirthday(Date.valueOf(request.getParameter("birthday")));
+		to.setName((String)paramMap.get("name"));
+		to.setPhone((String)paramMap.get("phone"));
+		to.setNickname((String)paramMap.get("nickname"));
+		to.setSmoke_years(Date.valueOf((String)paramMap.get("smoke_years")));
+		to.setBirthday(Date.valueOf((String)paramMap.get("birthday")));
 		int flag = dao.member_Modify_Ok(to);
 		
-		member_Modify_Ok_Obj.put("flag", flag);
+		member_modify_ok.put("flag", flag);
 		//System.out.println(member_Modify_Ok_Obj);
 		
-		mav.addObject("flag", flag);
-		mav.addObject("member_Modify_Ok_Obj", member_Modify_Ok_Obj);
-		mav.setViewName( "memberViews/memberModifyOk" );
-		
-		return mav;
+		return member_modify_ok;
 	}
 	
-	//비밀번호 수정
-	@RequestMapping(value = "/member_modify_password.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_modify_password (HttpServletRequest request, HttpServletRequest response) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/memberModifyPassword" );
-		return mav;
-	}
+//	//비밀번호 수정
+//	@RequestMapping(value = "/member_modify_password.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView member_modify_password (HttpServletRequest request, HttpServletRequest response) {
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/memberModifyPassword" );
+//		return mav;
+//	}
 	
 	//비밀번호 수정 확인
-	@RequestMapping(value = "/member_modify_password_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView member_modify_password_ok (HttpServletRequest request, HttpServletRequest response) {
+	@RequestMapping(value = "api/modifyPassword.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject member_modify_password_ok (@RequestBody Map<String, Object> paramMap ,HttpServletRequest request, HttpServletRequest response) {
 		MemberTO to = new MemberTO();
-		ModelAndView mav = new ModelAndView();
-		JSONObject member_Modify_Password_Obj = new JSONObject();
+		JSONObject modifyPassword = new JSONObject();
 		HttpSession session = request.getSession();
-		String newPassword = request.getParameter("newPassword");
+		String newPassword = (String)paramMap.get("newpassowrd");
 		to.setMember_seq((int)session.getAttribute("member_seq"));
-		to.setPassword(request.getParameter("oldPassword"));
-		
+		to.setPassword((String)paramMap.get("oldpassword"));
+
 		int flag = dao.member_Modify_Password(newPassword,to);
-		member_Modify_Password_Obj.put("flag", flag);
-		
-		mav.addObject("flag", flag);
-		mav.addObject("member_Modify_Password_Obj", member_Modify_Password_Obj);
-		mav.setViewName( "memberViews/memberModifyPasswordOk" );
-		return mav;
+		modifyPassword.put("flag", flag);
+		return modifyPassword;
 	}
 	
 	// 메일 보내기
-	@RequestMapping(value = "/mail.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView mail(HttpServletRequest request, HttpServletRequest response) {		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/memberMail" );
-		return mav;
-	}
-	
+//	@RequestMapping(value = "/mail.do", method = {RequestMethod.GET, RequestMethod.POST})
+//	public ModelAndView mail(HttpServletRequest request, HttpServletRequest response) {		
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/memberMail" );
+//		return mav;
+//	}
+
 	// 메일 유효성 검사
-	@RequestMapping(value = "/mail_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView mail_ok(HttpServletRequest request, HttpServletRequest response) {		
-		ModelAndView mav = new ModelAndView();
+	@RequestMapping(value = "api/mail_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject mail_ok(@RequestBody Map<String, Object> paramMap, HttpServletRequest request, HttpServletRequest response) {		
 		MemberTO to = new MemberTO();
-		
-		to.setEmail(request.getParameter("email"));
+		JSONObject mail_ok = new JSONObject();
+		to.setEmail((String)paramMap.get("email"));
 		to = dao.member_mail(to);
+		mail_ok.put("email", to.getEmail());
 		System.out.println(to.getMember_seq());
-		mav.setViewName( "memberViews/memberMailOk" );
-		mav.addObject("to", to);
-		return mav;
+		return mail_ok;
 	}
-	
-	// 회원 삭제, 회원 탈퇴
-	@RequestMapping("/member_delete.do")
-	public ModelAndView member_Delete(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName( "memberViews/memberDelete" );
-		return mav;
-	}
+
+//	// 회원 삭제, 회원 탈퇴
+//	@RequestMapping("/member_delete.do")
+//	public ModelAndView member_Delete(HttpServletRequest request, HttpServletResponse response) {
+//		ModelAndView mav = new ModelAndView();
+//		mav.setViewName( "memberViews/memberDelete" );
+//		return mav;
+//	}
 	
 	//회원 삭제, 회원 탈퇴 확인
-	@RequestMapping("/member_delete_ok.do")
-	public ModelAndView member_Delete_Ok(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView mav = new ModelAndView();
+	@RequestMapping("api/member_delete.do")
+	public JSONObject member_Delete_Ok(@RequestBody Map<String, Object> paramMap ,HttpServletRequest request, HttpServletResponse response) {
 		MemberTO to = new MemberTO();
-		JSONObject member_Delete_Obj = new JSONObject();
+		JSONObject member_delete = new JSONObject();
 		HttpSession session = request.getSession();
 		
-		to.setEmail(request.getParameter("email"));
-		to.setPassword(request.getParameter("password"));
+		to.setEmail((String)paramMap.get("email") );
+		to.setPassword((String)paramMap.get("password"));
 		to.setMember_seq((int)session.getAttribute("member_seq"));
 		int flag = dao.member_Delete_Ok(to);
+
+		member_delete.put("flag", flag);
 		
-		mav.setViewName("memberViews/memberDeleteOk");
-		mav.addObject("flag", flag);
-		member_Delete_Obj.put("flag", flag);
-		
-		return mav;
+		return member_delete;
 	}
+	
 }

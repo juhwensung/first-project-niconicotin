@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.gongji.dao.GongjiCommentDAO;
@@ -58,7 +59,7 @@ public class GongjiAPIController {
 //	}
 //	
 	@RequestMapping(value = "api/gongjiLists.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiList(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	public JSONObject gongjiList(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
 		String page = (String)(paramMap.get("_page"));
 		String limit = (String)(paramMap.get("_limit"));
 		
