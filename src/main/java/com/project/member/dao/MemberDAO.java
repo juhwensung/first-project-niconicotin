@@ -49,10 +49,10 @@ public class MemberDAO {
 		if(to.getEmail().equals("0")) {
 			System.out.println(to.getEmail());
 			flag = 0;
-			System.out.println("사용가능한 id다 이거야");
+			//System.out.println("사용가능한 id다 이거야");
 		} else {
 			flag = 1;
-			System.out.println("중복 ID");
+			//System.out.println("중복 ID");
 		};
 		return flag;
 	}
@@ -62,22 +62,27 @@ public class MemberDAO {
 		return to;
 	}
 	
-	public MemberTO member_mail(MemberTO to) {
+	public int member_mail(MemberTO to, String tempPassword) {
 		to = memberMapperInter.mail_ok(to);
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-		
+		int flag = 1;
 		try {
 			if(to.getEmail() != null) {
 				String toName = to.getName();
-				String subject = "비밀번호 변경 이메일입니다.";
-				String content = "<a href='http://localhost:8080/login.do?meber_seq="+to.getMember_seq()+"'>이동하기</a>";
+				String subject = "임시 비밀번호 이메일입니다.";
+				String content = "로그인 후 비밀번호 변경을 권장드립니다. <br> 임시 비밀번호: " + tempPassword;
 				mimeMessage.addRecipient(RecipientType.TO, new InternetAddress(to.getEmail(), toName, "utf-8"));
 				mimeMessage.setSubject(subject, "utf-8");
-				mimeMessage.setText(content, "utf-8", "html");	
+				mimeMessage.setText(content, "utf-8", "html");
+
+				to.setPassword(tempPassword.trim());
+				memberMapperInter.mail_password_ok(to);
 				javaMailSender.send(mimeMessage);
+				flag = 0;
 				System.out.println("전송이 완료 되었습니다");
-			} else { 
+			} else {
 				System.out.println("이메일이 존재 하지 않습니다.");
+				flag = 1;
 			}
 			
 			} catch (MailException e) {
@@ -93,15 +98,6 @@ public class MemberDAO {
 				// TODO: handle exception
 				e.printStackTrace();
 			}
-		return to;
-	}
-	
-	public int mail_password_ok(MemberTO to) {
-		int flag = 1;
-		int result = memberMapperInter.mail_password_ok(to);
-		if(result == 1 ) {
-			flag = 0;
-		}
 		return flag;
 	}
 	
@@ -155,7 +151,7 @@ public class MemberDAO {
 		String oldPwd = to.getPassword();
 		int seq = to.getMember_seq(); 
 		int result = memberMapperInter.member_modify_password(newPassword, seq, oldPwd);
-
+		
 		int flag = 1;
 		if(result == 1 ) {
 			flag = 0;

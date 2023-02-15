@@ -24,4 +24,5 @@ public class ReviewTO {
 	private String review_file_name;
 	private int review_file_size;
 	private Date review_smoke_years;
+	private boolean review_public;
 }

@@ -1,5 +1,6 @@
 package com.project.review.dao;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -19,6 +20,9 @@ public class ReviewDAO {
 	@Autowired
 	private ReviewMapperInter reviewMapperInter;
 	
+	private String filePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/reviewUpload/";
+
+	
 	public ArrayList<ReviewTO> reviewList(ReviewTO to) {
 		ArrayList<ReviewTO> reviewLists = reviewMapperInter.reviewList();
 		return reviewLists;
@@ -26,8 +30,8 @@ public class ReviewDAO {
 	
 	public ReviewTO reviewView(ReviewTO to) {
 		int res = reviewMapperInter.reviewView_hit(to);
-		System.out.println("조회수 상승 값 : " + res);
-		System.out.println(to.getReview_seq());
+		//System.out.println("조회수 상승 값 : " + res);
+		//System.out.println(to.getReview_seq());
 		to = reviewMapperInter.reviewView(to);
 		return to;
 	}
@@ -54,19 +58,32 @@ public class ReviewDAO {
 		return to;
 	}
 	
-	public int reviewModifyOk(ReviewTO to) {
-		int result = reviewMapperInter.reviewModify_ok(to);
-		int flag = 2;
+	public int reviewModifyOk(ReviewTO to, String oldfilename) {
+		int flag = 2;	
+		int result = 2;
+//		System.out.println("new: " + to.getFree_file_name().trim());
+//		System.out.println("old: " + oldfilename.trim());
+		if(to.getReview_file_name() != null) {
+			result = reviewMapperInter.reviewModify_ok(to);
+		} else {
+			result = reviewMapperInter.reviewModify_ok_NoImage(to);
+		}
 		
 		if(result == 0){
 			// 비밀번호가 잘못된경우
 			flag = 1;
+			if( to.getReview_file_name() != null ) {
+				File file = new File( filePath.trim(), oldfilename.trim() );
+				file.delete();
+			}
 		} else if(result == 1){
 			// 정상 작동
 			flag = 0;
-			int seq = to.getReview_cigar_seq();
-			double avg = reviewMapperInter.reviewAvgGrade(to);
-			reviewMapperInter.reviewCigarAvgGrade(avg, seq);
+			if( to.getReview_file_name() != null && oldfilename != null ) {
+				File file = new File( filePath.trim(), oldfilename.trim() );
+				//System.out.println(file.toString().trim());
+				file.delete();
+			}
 		}
 		return flag;
 	}
@@ -89,6 +106,12 @@ public class ReviewDAO {
 			int seq = to.getReview_cigar_seq();
 			double avg = reviewMapperInter.reviewAvgGrade(to);
 			reviewMapperInter.reviewCigarAvgGrade(avg, seq);
+			if( to.getReview_file_name() != null) {
+				File file = new File( filePath.trim(), to.getReview_file_name().trim());
+				//System.out.println(file.toString().trim());
+				//System.out.println(file);
+				file.delete();
+			}
 		}
 		return flag;
 	}
@@ -150,6 +173,10 @@ public class ReviewDAO {
 			flag = 1;
 		}
 		return flag;
+	}
+	public ArrayList<ReviewTO> reviewSearch(ReviewTO to){
+		ArrayList<ReviewTO> reviewSearchs = reviewMapperInter.ReviewBoardSearch(to);
+		return reviewSearchs;
 	}
 	
 }

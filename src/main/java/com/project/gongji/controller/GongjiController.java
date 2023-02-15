@@ -179,7 +179,8 @@ public class GongjiController {
 		} else {
 			to.setGongji_public(false);
 		}
-		int flag = dao.gongjiModifyOk(to);
+		String rr = "";
+		int flag = dao.gongjiModifyOk(to, rr);
 		mav.addObject("flag", flag);
 		mav.setViewName("gongjiViews/gongjiModify_ok");
 		return mav;

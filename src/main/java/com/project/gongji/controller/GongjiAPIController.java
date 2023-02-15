@@ -1,8 +1,13 @@
 package com.project.gongji.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.project.gongji.dao.GongjiCommentDAO;
 import com.project.gongji.dao.GongjiDAO;
@@ -29,6 +35,10 @@ public class GongjiAPIController {
 	private GongjiDAO dao;
 	@Autowired
 	private GongjiCommentDAO cmtDAO;
+	
+	private String filePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/gongjiUpload/";
+	private String backupFilePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/gongjiUpload/gongjiBackup/";
+
 //	
 //	@RequestMapping(value = "api/gongjiLists.do", method = {RequestMethod.GET, RequestMethod.POST})
 //	public JSONArray gongjiList(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
@@ -59,7 +69,7 @@ public class GongjiAPIController {
 //	}
 //	
 	@RequestMapping(value = "api/gongjiLists.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiList(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
+	public JSONArray gongjiList(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
 		String page = (String)(paramMap.get("_page"));
 		String limit = (String)(paramMap.get("_limit"));
 		
@@ -69,7 +79,7 @@ public class GongjiAPIController {
 			JSONObject obj = new JSONObject();
 			obj.put("gongji_seq", to2.getGongji_seq());
 			obj.put("gongji_writer_seq", to2.getGongji_writer_seq());
-			obj.put("testSub", to2.getGongji_subject());
+			obj.put("gongji_subject", to2.getGongji_subject());
 			obj.put("gongji_writer", to2.getGongji_writer());
 			obj.put("gongji_reg_date", to2.getGongji_reg_date().toString());
 			obj.put("gongji_content", to2.getGongji_content());
@@ -82,20 +92,21 @@ public class GongjiAPIController {
 			
 			gongjiLists.add(obj);
 		}
-		JSONObject obj = new JSONObject();
-		obj.put("page", page);
-		obj.put("limit", limit);
-		obj.put("gongjiLists", gongjiLists);
+		//JSONObject obj = new JSONObject();
+		//obj.put("page", page);
+		//obj.put("limit", limit);
+		//obj.put("gongjiLists", gongjiLists);
 		//LJson.put("gongjiLists", gongjiLists);
 		//System.out.println(LJson);
-		return obj;
+		return gongjiLists;
 	}
 	
-	@RequestMapping(value = "api/gongji_view.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiView(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	@RequestMapping(value = "api/gongjiView.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public JSONObject gongjiView(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
 		GongjiTO to = new GongjiTO();
 		//to.setGongji_cigar_seq(Integer.parseInt((String)(paramMap.get("gongji_cigar_seq")));
-		to.setGongji_seq(Integer.parseInt((String)(paramMap.get("gongji_seq"))));
+		//to.setGongji_seq(Integer.parseInt((String)(paramMap.get("gongji_seq"))));
+		to.setGongji_seq(Integer.parseInt(request.getParameter("gongji_seq")));
 		//HttpSession session = request.getSession();
 		//System.out.println((int)session.getAttribute("member_seq"));
 		to = dao.gongjiView(to);
@@ -122,29 +133,32 @@ public class GongjiAPIController {
 	}
 	
 	@RequestMapping(value = "api/gongji_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiWriteOk(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	public JSONObject gongjiWriteOk(HttpServletRequest request, HttpServletResponse response, 
+			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
 		HttpSession session = request.getSession();
-		System.out.println("확인 : " + (String)(paramMap.get("gongji_subject")));
-		System.out.println("session : " + session.getAttribute("member_seq"));
+		//System.out.println("확인 : " + (String)(paramMap.get("gongji_subject")));
+		//System.out.println("session : " + session.getAttribute("member_seq"));
 		GongjiTO to = new GongjiTO();
 		
-		to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
-		to.setGongji_subject((String)(paramMap.get("gongji_subject")));
-		to.setGongji_writer((String)session.getAttribute("nickname"));
-		to.setGongji_content((String)(paramMap.get("gongji_content")));
-		
-		//to.setGongji_file_name((String)(paramMap.get("gongji_file_name"));
-		//to.setGongji_file_size(Integer.parseInt((String)(paramMap.get("gongji_file_size")));
-		to.setGongji_file_name("이미지.jpg");
-		to.setGongji_file_size(12);
-		to.setGongji_smoke_years((Date)session.getAttribute("smoke_years"));
-		to.setGongji_public((boolean)request.getAttribute("gongji_public"));
-//		
-//		if(to.isGongji_public()) {
-//			to.setGongji_public(true);
-//		} else {
-//			to.setGongji_public(false);
-//		}
+		try {
+			to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
+			to.setGongji_subject((String)(paramMap.get("gongji_subject")));
+			to.setGongji_writer((String)session.getAttribute("nickname"));
+			to.setGongji_content((String)(paramMap.get("gongji_content")));
+			to.setGongji_smoke_years((Date)session.getAttribute("smoke_years"));
+			to.setGongji_public((boolean)request.getAttribute("gongji_public"));
+			if( !upload.isEmpty() ) {
+				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
+				to.setGongji_file_name(UUID.randomUUID().toString() + extention);
+				to.setGongji_file_size((int)upload.getSize());
+				byte[] bytes = upload.getBytes();
+				Path path = Paths.get((filePath + to.getGongji_file_name()).trim());
+	            Files.write(path, bytes);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("[에러] : " + e.getMessage());
+		}
 
 		int flag = dao.gongjiWriteOk(to);
 		JSONObject gongjiWriteOk = new JSONObject();
@@ -176,29 +190,44 @@ public class GongjiAPIController {
 	}
 	
 	@RequestMapping(value = "/api/gongji_modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiModifyOk(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	public JSONObject gongjiModifyOk(HttpServletRequest request, HttpServletResponse response, 
+			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
 		//System.out.println((String)(paramMap.get("gongji_subject"));
-		System.out.println(paramMap.get("gongji_seq"));
-		System.out.println(paramMap.get("gongji_subject"));
-		System.out.println(paramMap.get("gongji_content"));
+		//System.out.println(paramMap.get("gongji_seq"));
+		//System.out.println(paramMap.get("gongji_subject"));
+		//System.out.println(paramMap.get("gongji_content"));
 		GongjiTO to = new GongjiTO();
-		to.setGongji_seq(Integer.valueOf((String)paramMap.get("gongji_seq")));
-		to.setGongji_subject((String)(paramMap.get("gongji_subject")));
-		to.setGongji_content((String)(paramMap.get("gongji_content")));
-//		
-//		to.setGongji_file_name((String)(paramMap.get("gongji_file_name"));
-//		to.setGongji_file_size(Integer.parseInt((String)(paramMap.get("gongji_file_size")));
-//		
 		
-		to.setGongji_file_name("테스트1");
-		to.setGongji_file_size(1268);
-		to.setGongji_public((boolean)paramMap.get("gongji_public"));
-//		if((String)(paramMap.get("gongji_public").equals("public")) {
-//			to.setGongji_public(true);
-//		} else {
-//			to.setGongji_public(false);
-//		}
-		int flag = dao.gongjiModifyOk(to);
+		String oldfilename = (String)paramMap.get("gongji_file_name");
+		
+		try {
+			to.setGongji_seq(Integer.valueOf((String)paramMap.get("gongji_seq")));
+			to.setGongji_subject((String)(paramMap.get("gongji_subject")));
+			to.setGongji_content((String)(paramMap.get("gongji_content")));
+			to.setGongji_public((boolean)paramMap.get("gongji_public"));
+			
+			if( !upload.isEmpty() ) {
+				byte[] bytes = upload.getBytes();
+				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
+				to.setGongji_file_name(UUID.randomUUID().toString() + extention);
+				to.setGongji_file_size((int) upload.getSize());
+				
+			    Path targetPath = Paths.get(filePath.trim() + oldfilename.trim());
+			    Path backuppath = Paths.get(backupFilePath.trim() + oldfilename.trim());			
+				Path path = Paths.get(filePath.trim() + to.getGongji_file_name().trim());
+				
+				Files.write(path, bytes);
+			    Files.copy(targetPath, backuppath);;
+			}
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			System.out.println("[에러] : " + e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("[에러] : " + e.getMessage());
+		}
+		
+		int flag = dao.gongjiModifyOk(to, oldfilename);
 		JSONObject gongjiModifyOk = new JSONObject();
 		gongjiModifyOk.put("flag", flag);
 		return gongjiModifyOk;
@@ -233,7 +262,17 @@ public class GongjiAPIController {
 		GongjiTO to = new GongjiTO();
 		to.setGongji_seq(Integer.parseInt((String)(paramMap.get("gongji_seq"))));
 		to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
-		
+		try {
+			to = dao.gongjiDelete(to);
+			Path targetPath = Paths.get(filePath.trim() + to.getGongji_file_name());
+			Path backuppath = Paths.get(backupFilePath.trim() + to.getGongji_file_name());		
+			Files.copy(targetPath, backuppath);
+			System.out.println(to.getGongji_file_name());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+		to.setGongji_file_name(to.getGongji_file_name());
 		int flag = dao.gongjiDeleteOk(to);
 		JSONObject gongjideleteOk = new JSONObject();
 		gongjideleteOk.put("flag", flag);
@@ -302,7 +341,7 @@ public class GongjiAPIController {
 	}
 	
 	@RequestMapping(value = "api/gongji_cmt_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONObject gongjiCmtWriteOk(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	public JSONObject gongjiCmtWriteOk(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
 		 
 		GongjiCommentTO to = new GongjiCommentTO();
 		HttpSession session = request.getSession();

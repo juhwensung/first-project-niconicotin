@@ -17,7 +17,7 @@ public class FreeBoardDAO {
 	@Autowired
 	private FreeBoardMapperInter freeBoardMapperInter;
 	
-	private String uploadPath = "C:/eGovFrameDev-4.0.0-64bit/workspace/Project_Cigar/src/main/webapp/upload/";
+	private String filePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/freeUpload/";
 	
 	public ArrayList<FreeBoardTO> freeList() {
 		ArrayList<FreeBoardTO> freeLists = freeBoardMapperInter.freeList();
@@ -27,7 +27,7 @@ public class FreeBoardDAO {
 	public FreeBoardTO freeView(FreeBoardTO to) {
 		to = freeBoardMapperInter.freeView(to);
 		int result = freeBoardMapperInter.freeViewHit(to);
-		System.out.println(result);
+		//System.out.println(result);
 		return to;
 	}
 	
@@ -48,7 +48,7 @@ public class FreeBoardDAO {
 	public int freeModifyOk(FreeBoardTO to, String oldfilename) {
 		
 		int flag = 2;
-		int result = 1;
+		int result = 2;
 		System.out.println("new:" + to.getFree_file_name());
 		System.out.println("old:" + oldfilename);
 		if(to.getFree_file_name() != null) {
@@ -61,14 +61,14 @@ public class FreeBoardDAO {
 			// 비밀번호가 잘못된경우
 			flag = 1;
 			if( to.getFree_file_name() != null ) {
-				File file = new File( uploadPath, to.getFree_file_name() );
+				File file = new File( filePath.trim(), oldfilename.trim() );
 				file.delete();
 			}
 		} else if(result == 1){
 			// 정상 작동
 			flag = 0;
 			if( to.getFree_file_name() != null && oldfilename != null ) {
-				File file = new File( uploadPath.trim(), oldfilename.trim() );
+				File file = new File( filePath.trim(), oldfilename.trim() );
 				//System.out.println(file.toString().trim());
 				file.delete();
 			}
@@ -96,11 +96,17 @@ public class FreeBoardDAO {
 			// 정상 작동
 			flag = 0;
 			if( to.getFree_file_name() != null) {
-				File file = new File( uploadPath.trim(), to.getFree_file_name().trim());
+				File file = new File( filePath.trim(), to.getFree_file_name().trim());
 				//System.out.println(file.toString().trim());
+				//System.out.println(file);
 				file.delete();
 			}
 		}
 		return flag;
+	}
+	
+	public ArrayList<FreeBoardTO> freeSearch(FreeBoardTO to) {
+		ArrayList<FreeBoardTO> freeSearchList = freeBoardMapperInter.FreeBoardSearch(to);
+		return freeSearchList;
 	}
 }

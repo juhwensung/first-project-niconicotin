@@ -1,5 +1,9 @@
 package com.project.cigar.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,8 +113,6 @@ public class CigarController {
 		to.setCigar_name(request.getParameter("cigar_name"));
 		to.setCigar_tar(Double.parseDouble(request.getParameter("cigar_tar")));
 		to.setCigar_nicotine(Double.parseDouble(request.getParameter("cigar_nicotine")));
-		to.setCigar_file_name(request.getParameter("cigar_file_name"));
-		to.setCigar_file_size(Integer.parseInt(request.getParameter("cigar_file_size")));
 		to.setCigar_hash_tag(request.getParameter("cigar_hash_tag"));
 		to.setCigar_content(request.getParameter("cigar_content"));
 		to.setCigar_total_grade(Double.parseDouble(request.getParameter("cigar_total_grade")));
@@ -171,8 +173,8 @@ public class CigarController {
 		to.setCigar_hash_tag(request.getParameter("cigar_hash_tag"));
 		to.setCigar_content(request.getParameter("cigar_content"));
 		to.setCigar_total_grade(Double.parseDouble(request.getParameter("cigar_total_grade")));
-		
-		int flag = dao.cigarModifyOk(to);
+		String rr = "";
+		int flag = dao.cigarModifyOk(to, rr);
 		
 		mav.addObject("flag", flag);
 		mav.setViewName("cigarViews/cigarModify_ok");
@@ -210,6 +212,33 @@ public class CigarController {
 		int flag = dao.cigarDeleteOk(to);
 		mav.addObject("flag", flag);
 		mav.setViewName("cigarViews/cigarDelete_ok");
+		return mav;
+	}
+	
+	@RequestMapping("/cigar/hash.do")
+	public ModelAndView cigarHash(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView();
+		JSONArray hashTagListJ = new JSONArray();
+		ArrayList<String> hashTagList = dao.hashTagListDAO();
+		ArrayList<String> hashTagAll = new ArrayList<String>();
+		
+		for(String str : hashTagList) {
+			String[] arr = str.split("#");
+			for(int j = 1; j < arr.length; j++) {
+				hashTagAll.add("#" + arr[j]);
+			}
+		}
+		List<String> arr1 = hashTagAll.stream().distinct().collect(Collectors.toList());
+		for(int i = 0; i < arr1.size(); i++) {
+			JSONObject obj = new JSONObject();
+			obj.put("cigar_hash_tag", arr1.get(i));
+			obj.put("keyNum", i+1);
+			hashTagListJ.add(obj);
+		}
+		
+		mav.addObject("hashTagListJ", hashTagListJ);
+		mav.setViewName("cigarViews/cigarHashTagList");
+		
 		return mav;
 	}
 }

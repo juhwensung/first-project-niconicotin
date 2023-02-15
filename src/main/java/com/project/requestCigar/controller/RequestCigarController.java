@@ -180,7 +180,8 @@ public class RequestCigarController {
 		to.setRequest_nicotine(Double.parseDouble(request.getParameter("request_nicotine")));
 		to.setRequest_file_name(request.getParameter("request_file_name"));
 		to.setRequest_file_size(Integer.parseInt(request.getParameter("request_file_size")));
-		int flag = dao.requestModifyOk(to);
+		String rr = "";
+		int flag = dao.requestModifyOk(to, rr);
 		mav.addObject("flag", flag);
 		mav.setViewName("requestViews/requestModify_ok");
 		return mav;

@@ -180,7 +180,8 @@ public class ReviewController {
 		to.setReview_grade(Integer.parseInt(review.getParameter("review_grade")));
 		to.setReview_file_name(review.getParameter("review_file_name"));
 		to.setReview_file_size(Integer.parseInt(review.getParameter("review_file_size")));
-		int flag = dao.reviewModifyOk(to);
+		String rr = "";
+		int flag = dao.reviewModifyOk(to, rr);
 		mav.addObject("flag", flag);
 		mav.setViewName("reviewViews/reviewModify_ok");
 		return mav;

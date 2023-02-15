@@ -52,4 +52,11 @@ public interface GongjiMapperInter {
 	
 	@Delete("delete from gongji_board where gongji_seq=#{gongji_seq} and gongji_writer_seq=#{gongji_writer_seq}")
 	int gongjiDelete_ok(GongjiTO to);
+	
+	@Select("select gongji_seq, gongji_writer_seq, gongji_subject, gongji_writer, gongji_reg_date, gongji_content, gongji_hit, gongji_cmt_count, "
+			+ "gongji_file_name, gongji_file_size, gongji_smoke_years, gongji_public from gongji_board "
+			+ " where gongji_subject like CONCAT('%', #{gongji_subject}, '%')"
+			+ " or gongji_content like CONCAT('%', #{gongji_content}, '%')"
+			+ " or gongji_writer like CONCAT('%', #{gongji_writer}, '%')")
+	ArrayList<GongjiTO> GongjiBoardSearch(GongjiTO to);
 }

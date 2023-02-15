@@ -24,4 +24,5 @@ public class RequestCigarTO {
 	private String request_file_name;
 	private int request_file_size;
 	private Date request_smoke_years;
+	private boolean request_public;
 }

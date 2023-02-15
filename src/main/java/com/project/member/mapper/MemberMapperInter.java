@@ -16,25 +16,25 @@ import com.project.review.to.ReviewTO;
 
 @Mapper
 public interface MemberMapperInter {
-	@Select("select member_seq, email, name, phone, nickname, smoke_years, prefer_cigar, birthday from member_table "
+	@Select("select member_seq, email, name, phone, nickname, smoke_years, birthday from member_table "
 			+ "where email=#{email} and password = HEX(AES_ENCRYPT(#{password}, SHA2('apfh2009@naver.com', 256)))")
 	public MemberTO login_Ok(MemberTO to);
 	
-	@Insert("insert into member_table values (0, #{email}, HEX(AES_ENCRYPT(#{password}, SHA2('apfh2009@naver.com', 256))), #{name}, #{phone} , #{nickname}, #{smoke_years} , #{prefer_cigar},  now(), #{birthday});")
+	@Insert("insert into member_table values (0, #{email}, HEX(AES_ENCRYPT(#{password}, SHA2('apfh2009@naver.com', 256))), #{name}, #{phone} , #{nickname}, #{smoke_years}, now(), #{birthday});")
 	int member_Ok(MemberTO to);
 	
 	@Select("select count(email) email from member_table where email=#{email}")
 	MemberTO member_Id_Check(MemberTO to);
 	
-	@Select("select member_seq, email, name, phone, nickname, date_format(smoke_years, '%Y-%m-%d') smoke_years, prefer_cigar, sign_date, birthday "
+	@Select("select member_seq, email, name, phone, nickname, date_format(smoke_years, '%Y-%m-%d') smoke_years, sign_date, birthday "
 			+ "from member_table where member_seq=#{member_seq}")
 	MemberTO member_View(MemberTO to);
 
-	@Select("select member_seq, email, name,phone, nickname, smoke_years, prefer_cigar, sign_date, birthday "
+	@Select("select member_seq, email, name,phone, nickname, smoke_years, sign_date, birthday "
 			+ "from member_table where member_seq=#{member_seq}")
 	MemberTO member_modify(MemberTO to);
 	
-	@Update("update member_table set name=#{name}, phone=#{phone}, prefer_cigar=#{prefer_cigar}, birthday=#{birthday} where member_seq=#{member_seq} ")
+	@Update("update member_table set name=#{name}, phone=#{phone}, birthday=#{birthday} where member_seq=#{member_seq} ")
 	int member_modify_ok(MemberTO to);
 	
 	@Update("update member_table set password=HEX(AES_ENCRYPT(#{newPassword}, SHA2('apfh2009@naver.com', 256))) "
@@ -47,10 +47,10 @@ public interface MemberMapperInter {
 	@Select("select email from member_table where name=#{name} and phone=#{phone} and birthday=#{birthday} ")
 	MemberTO search_Id(MemberTO to);
 	
-	@Select("select email, name, member_seq, nickname from member_table where email=#{email}")
+	@Select("select email, name, member_seq, nickname from member_table where email=#{email} and name=#{name} and phone={#phone}")
 	MemberTO mail_ok(MemberTO to);
 	
-	@Update("update member_table set password=HEX(AES_ENCRYPT(#{password}, SHA2('apfh2009@naver.com', 256))) where member_seq=#{seq}")
+	@Update("update member_table set password=HEX(AES_ENCRYPT(#{password}, SHA2('apfh2009@naver.com', 256))) where member_seq=#{member_seq}")
 	int mail_password_ok(MemberTO to);
 	
 	@Select("select review_writer_seq, review_writer, review_seq, review_subject from review_board where review_writer_seq=#{review_writer_seq}")
