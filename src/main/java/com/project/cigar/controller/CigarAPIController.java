@@ -303,7 +303,7 @@ public class CigarAPIController {
 	}
 	
 	@RequestMapping(value = "/api/hash.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public JSONArray cigarHash(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
+	public JSONArray cigarHash(HttpServletRequest request, HttpServletResponse response, @RequestParam Map<String,Object> paramMap) {
 		JSONArray hashTagListJ = new JSONArray();
 		ArrayList<String> hashTagList = dao.hashTagListDAO();
 		ArrayList<String> hashTagAll = new ArrayList<String>();

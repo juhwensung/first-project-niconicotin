@@ -45,10 +45,7 @@ public class GongjiController {
 			obj.put("gongji_content", to2.getGongji_content());
 			obj.put("gongji_hit", to2.getGongji_hit());
 			obj.put("gongji_cmt_count", to2.getGongji_cmt_count());
-			obj.put("gongji_file_name", to2.getGongji_file_name());
-			obj.put("gongji_file_size", to2.getGongji_file_size());
 			obj.put("gongji_smoke_years", to2.getGongji_smoke_years().toString());
-			obj.put("gongji_public", to2.isGongji_public());
 			
 			gongjiLists.add(obj);
 		}
@@ -79,10 +76,7 @@ public class GongjiController {
 		gongjiViewObj.put("gongji_content", to.getGongji_content());
 		gongjiViewObj.put("gongji_hit", to.getGongji_hit());
 		gongjiViewObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiViewObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiViewObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiViewObj.put("gongji_smoke_years", to.getGongji_smoke_years());
-		gongjiViewObj.put("gongji_public", to.isGongji_public());
 		
 		ArrayList<GongjiCommentTO> CommentListTO = cmtDAO.gongjiCommentList(cmtTO);
 		JSONArray gongjiCommentLists = new JSONArray();
@@ -126,14 +120,6 @@ public class GongjiController {
 		to.setGongji_subject(request.getParameter("gongji_subject"));
 		to.setGongji_writer((String)session.getAttribute("nickname"));
 		to.setGongji_content(request.getParameter("gongji_content"));
-		to.setGongji_file_name(request.getParameter("gongji_file_name"));
-		to.setGongji_file_size(Integer.parseInt(request.getParameter("gongji_file_size")));
-
-		if(request.getParameter("gongji_public").equals("public")) {
-			to.setGongji_public(true);
-		} else {
-			to.setGongji_public(false);
-		}
 
 		int flag = dao.gongjiWriteOk(to);
 		mav.addObject("flag", flag);
@@ -156,10 +142,7 @@ public class GongjiController {
 		gongjiModifyObj.put("gongji_content", to.getGongji_content());
 		gongjiModifyObj.put("gongji_hit", to.getGongji_hit());
 		gongjiModifyObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiModifyObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiModifyObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiModifyObj.put("gongji_smoke_years", to.getGongji_smoke_years());
-		gongjiModifyObj.put("gongji_public", to.isGongji_public());
 		mav.addObject("gongjiModifyObj", gongjiModifyObj);
 		mav.setViewName("gongjiViews/gongjiModify");
 		return mav;
@@ -172,15 +155,8 @@ public class GongjiController {
 		to.setGongji_seq(Integer.parseInt(request.getParameter("gongji_seq")));
 		to.setGongji_subject(request.getParameter("gongji_subject"));
 		to.setGongji_content(request.getParameter("gongji_content"));
-		to.setGongji_file_name(request.getParameter("gongji_file_name"));
-		to.setGongji_file_size(Integer.parseInt(request.getParameter("gongji_file_size")));
-		if(request.getParameter("gongji_public").equals("public")) {
-			to.setGongji_public(true);
-		} else {
-			to.setGongji_public(false);
-		}
 		String rr = "";
-		int flag = dao.gongjiModifyOk(to, rr);
+		int flag = dao.gongjiModifyOk(to);
 		mav.addObject("flag", flag);
 		mav.setViewName("gongjiViews/gongjiModify_ok");
 		return mav;
@@ -201,10 +177,7 @@ public class GongjiController {
 		gongjiDeleteObj.put("gongji_content", to.getGongji_content());
 		gongjiDeleteObj.put("gongji_hit", to.getGongji_hit());
 		gongjiDeleteObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiDeleteObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiDeleteObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiDeleteObj.put("gongji_smoke_years", to.getGongji_smoke_years());
-		gongjiDeleteObj.put("gongji_public", to.isGongji_public());
 		mav.addObject("gongjiDeleteObj", gongjiDeleteObj);
 		mav.setViewName("gongjiViews/gongjiDelete");
 		return mav;

@@ -7,8 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
+<form action="member_id_check.do" method="post">
+Email <input type="text" name="email">
+<input type="submit" value="중복 확인"> <br>
+</form>
 <form action="member_ok.do" method="post"><br>
-Email <input type="text" name="email"> <br>
 Password <input type="password" name="password"> <br>
 이름 <input type="text" name="name"> <br>
 주소 <input type="text" name="address"> <br>

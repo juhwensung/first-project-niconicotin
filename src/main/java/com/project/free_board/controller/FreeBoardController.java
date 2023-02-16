@@ -50,9 +50,6 @@ public class FreeBoardController {
 			obj.put("free_reg_date", to.getFree_reg_date().toString());
 			obj.put("free_smoke_years", to.getFree_smoke_years().toString());
 			obj.put("free_hit", to.getFree_cmt_count());
-			obj.put("free_file_name", to.getFree_file_name());
-			obj.put("free_file_size", to.getFree_file_size());
-			obj.put("free_public",to.isFree_public());
 			
 			jsonArray.add(obj);
 		}
@@ -84,9 +81,6 @@ public class FreeBoardController {
 		freeViewObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeViewObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeViewObj.put("free_hit", to.getFree_cmt_count());
-		freeViewObj.put("free_file_name", to.getFree_file_name());
-		freeViewObj.put("free_file_size", to.getFree_file_size());
-		freeViewObj.put("free_public",to.isFree_public());
 		
 		ArrayList<FreeBoardCommentTO> CommentListTO = cmtDAO.freeCommentList(cmtTO);
 		JSONArray freeCommentLists = new JSONArray();
@@ -127,7 +121,7 @@ public class FreeBoardController {
 		FreeBoardTO to = new FreeBoardTO();
 		
 		//System.out.println(request.getAttribute("free_public_true"));
-		try {
+
 			to.setFree_seq(Integer.parseInt(request.getParameter("free_seq")));
 			to.setFree_writer_seq((int)session.getAttribute("member_seq"));
 			to.setFree_writer((String)session.getAttribute("nickname"));
@@ -135,30 +129,6 @@ public class FreeBoardController {
 			to.setFree_content(request.getParameter("free_content"));
 			to.setFree_smoke_years((Date)session.getAttribute("smoke_years"));
 			
-			if(request.getParameter("free_public").trim().equals("public")) {
-				to.setFree_public(true);
-				//System.out.println("공개글 값" + request.getParameter("free_public"));
-			} else {
-				to.setFree_public(false);
-				//System.out.println("비공개글 값" + request.getParameter("free_public"));
-			}
-			
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setFree_file_name(UUID.randomUUID().toString() + extention);
-				to.setFree_file_size((int)upload.getSize());
-				upload.transferTo(new File(to.getFree_file_name()));
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
 		
 //		} catch(NullPointerException e) {
 //			System.out.println("[에러] : " + e.getMessage());
@@ -189,9 +159,6 @@ public class FreeBoardController {
 		freeModifyObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeModifyObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeModifyObj.put("free_cmt_count", to.getFree_cmt_count());
-		freeModifyObj.put("free_file_name", to.getFree_file_name());
-		freeModifyObj.put("free_file_size", to.getFree_file_size());
-		freeModifyObj.put("free_public", to.isFree_public());
 		
 		mav.addObject("freeModifyObj", freeModifyObj);
 		mav.setViewName("freeViews/freeModify");
@@ -203,38 +170,13 @@ public class FreeBoardController {
 	public ModelAndView freeModify_Ok(HttpServletRequest request, HttpServletResponse response, MultipartFile upload) {
 		ModelAndView mav = new ModelAndView();
 		FreeBoardTO to = new FreeBoardTO();
-		String oldfilename = request.getParameter("free_file_name");
-		
-		try {
+
 			to.setFree_seq(Integer.parseInt(request.getParameter("free_seq")));
 			to.setFree_subject(request.getParameter("free_subject"));
 			to.setFree_content(request.getParameter("free_content"));
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setFree_file_name(UUID.randomUUID().toString() + extention);
-				to.setFree_file_size((int) upload.getSize());
-				upload.transferTo(new File(to.getFree_file_name()));
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+			
 		
-		if(request.getParameter("free_public").trim().equals("public")) {
-			to.setFree_public(true);
-			//System.out.println("공개글 값" + request.getParameter("free_public"));
-		} else {
-			to.setFree_public(false);
-			//System.out.println("비공개글 값" + request.getParameter("free_public"));
-		}
-		
-		int flag = dao.freeModifyOk(to, oldfilename);
+		int flag = dao.freeModifyOk(to);
 		mav.addObject("flag", flag);
 
 		mav.setViewName("freeViews/freeModify_ok");		
@@ -261,9 +203,6 @@ public class FreeBoardController {
 		freeDeleteObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeDeleteObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeDeleteObj.put("free_cmt_count", to.getFree_cmt_count());
-		freeDeleteObj.put("free_file_name", to.getFree_file_name());
-		freeDeleteObj.put("free_file_size", to.getFree_file_size());
-		
 		mav.addObject("freeDeleteObj", freeDeleteObj);
 		mav.setViewName("freeViews/freeDelete");
 		
@@ -276,7 +215,6 @@ public class FreeBoardController {
 		FreeBoardTO to = new FreeBoardTO();
 		
 		to.setFree_seq(Integer.parseInt(request.getParameter("free_seq")));
-		to.setFree_file_name(request.getParameter("free_file_name"));
 		int flag = dao.freeDeleteOk(to);
 		
 		mav.addObject("flag", flag);			

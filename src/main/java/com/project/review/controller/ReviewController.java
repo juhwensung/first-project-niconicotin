@@ -51,8 +51,6 @@ public class ReviewController {
 			obj.put("review_grade", to2.getReview_grade());
 			obj.put("review_like", to2.getReview_like());
 			obj.put("review_dislike", to2.getReview_dislike());
-			obj.put("review_file_name", to2.getReview_file_name());
-			obj.put("review_file_size", to2.getReview_file_size());
 			obj.put("review_smoke_years", to2.getReview_smoke_years());
 			
 			reviewLists.add(obj);
@@ -87,8 +85,6 @@ public class ReviewController {
 		reviewViewObj.put("review_grade", to.getReview_grade());
 		reviewViewObj.put("review_like", to.getReview_like());
 		reviewViewObj.put("review_dislike", to.getReview_dislike());
-		reviewViewObj.put("review_file_name", to.getReview_file_name());
-		reviewViewObj.put("review_file_size", to.getReview_file_size());
 		reviewViewObj.put("review_smoke_years", to.getReview_smoke_years());
 		
 		ArrayList<ReviewCommentTO> CommentListTO = cmtDAO.reviewCommentList(cmtTO);
@@ -132,8 +128,6 @@ public class ReviewController {
 		to.setReview_writer(review.getParameter("review_writer"));
 		to.setReview_content(review.getParameter("review_content"));
 		to.setReview_grade(Integer.parseInt(review.getParameter("review_grade")));
-		to.setReview_file_name(review.getParameter("review_file_name"));
-		to.setReview_file_size(Integer.parseInt(review.getParameter("review_file_size")));
 		//to.setReview_writer_seq(Integer.parseInt(review.getParameter("review_smoke_years")));
 		
 		int flag = dao.reviewWriteOk(to);
@@ -161,8 +155,6 @@ public class ReviewController {
 		reviewModifyObj.put("review_grade", to.getReview_grade());
 		reviewModifyObj.put("review_like", to.getReview_like());
 		reviewModifyObj.put("review_dislike", to.getReview_dislike());
-		reviewModifyObj.put("review_file_name", to.getReview_file_name());
-		reviewModifyObj.put("review_file_size", to.getReview_file_size());
 		reviewModifyObj.put("review_smoke_years", to.getReview_smoke_years());
 		mav.addObject("reviewModifyObj", reviewModifyObj);
 		mav.setViewName("reviewViews/reviewModify");
@@ -178,10 +170,7 @@ public class ReviewController {
 		to.setReview_subject(review.getParameter("review_subject"));
 		to.setReview_content(review.getParameter("review_content"));
 		to.setReview_grade(Integer.parseInt(review.getParameter("review_grade")));
-		to.setReview_file_name(review.getParameter("review_file_name"));
-		to.setReview_file_size(Integer.parseInt(review.getParameter("review_file_size")));
-		String rr = "";
-		int flag = dao.reviewModifyOk(to, rr);
+		int flag = dao.reviewModifyOk(to);
 		mav.addObject("flag", flag);
 		mav.setViewName("reviewViews/reviewModify_ok");
 		return mav;
@@ -206,8 +195,6 @@ public class ReviewController {
 		reviewDeleteObj.put("review_grade", to.getReview_grade());
 		reviewDeleteObj.put("review_like", to.getReview_like());
 		reviewDeleteObj.put("review_dislike", to.getReview_dislike());
-		reviewDeleteObj.put("review_file_name", to.getReview_file_name());
-		reviewDeleteObj.put("review_file_size", to.getReview_file_size());
 		reviewDeleteObj.put("review_smoke_years", to.getReview_smoke_years());
 		mav.addObject("reviewDeleteObj", reviewDeleteObj);
 		mav.setViewName("reviewViews/reviewDelete");

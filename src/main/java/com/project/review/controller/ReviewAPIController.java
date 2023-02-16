@@ -1,13 +1,8 @@
 package com.project.review.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.project.review.dao.ReviewCommentDAO;
 import com.project.review.dao.ReviewDAO;
@@ -37,10 +31,7 @@ public class ReviewAPIController {
 	private ReviewDAO dao;
 	@Autowired
 	private ReviewCommentDAO cmtDAO;
-	
-	private String filePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/reviewUpload/";
-	private String backupFilePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/reviewUpload/reviewBackup/";
-	
+
 	@RequestMapping(value = "api/reviewLists.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONArray reviewList(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,Object> paramMap) {
 		 
@@ -62,10 +53,7 @@ public class ReviewAPIController {
 			obj.put("review_grade", to2.getReview_grade());
 			obj.put("review_like", to2.getReview_like());
 			obj.put("review_dislike", to2.getReview_dislike());
-			obj.put("review_file_name", to2.getReview_file_name());
-			obj.put("review_file_size", to2.getReview_file_size());
 			obj.put("review_smoke_years", to2.getReview_smoke_years().toString());
-			obj.put("review_public", to2.isReview_public());
 			
 			reviewLists.add(obj);
 		}
@@ -94,10 +82,7 @@ public class ReviewAPIController {
 		reviewViewObj.put("review_grade", to.getReview_grade());
 		reviewViewObj.put("review_like", to.getReview_like());
 		reviewViewObj.put("review_dislike", to.getReview_dislike());
-		reviewViewObj.put("review_file_name", to.getReview_file_name());
-		reviewViewObj.put("review_file_size", to.getReview_file_size());
 		reviewViewObj.put("review_smoke_years", to.getReview_smoke_years().toString());
-		reviewViewObj.put("review_public", to.isReview_public());
 		return reviewViewObj;
 	}
 	
@@ -108,36 +93,19 @@ public class ReviewAPIController {
 	
 	@RequestMapping(value = "api/review_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONObject reviewWriteOk(HttpServletRequest request, HttpServletResponse response, 
-			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
+			@RequestBody Map<String,Object> paramMap) {
 		HttpSession session = request.getSession();
 		ReviewTO to = new ReviewTO();
 		
-		try {
-			to.setReview_writer_seq((int)session.getAttribute("member_seq"));
-			to.setReview_cigar_seq(Integer.parseInt((String)(paramMap.get("review_cigar_seq"))));
-			to.setReview_subject((String)(paramMap.get("review_subject")));
-			to.setReview_writer((String)(session.getAttribute("review_writer")));
-			to.setReview_content((String)(paramMap.get("review_content")));
-			to.setReview_grade(Integer.parseInt((String)(paramMap.get("review_grade"))));
-			//to.setReview_writer_seq(Integer.parseInt((String)(paramMap.get("review_smoke_years")));
-			to.setReview_smoke_years((Date)session.getAttribute("smoke_years"));
-			to.setReview_public((boolean)paramMap.get("review_public"));
-			
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setReview_file_name(UUID.randomUUID().toString() + extention);
-				to.setReview_file_size((int)upload.getSize());
-				byte[] bytes = upload.getBytes();
-				Path path = Paths.get((filePath + to.getReview_file_name()).trim());
-			    Files.write(path, bytes);
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+		to.setReview_writer_seq((int)session.getAttribute("member_seq"));
+		to.setReview_cigar_seq(Integer.parseInt((String)(paramMap.get("review_cigar_seq"))));
+		to.setReview_subject("제목");
+		to.setReview_writer((String)(session.getAttribute("review_writer")));
+		to.setReview_content((String)(paramMap.get("review_content")));
+		to.setReview_grade(Integer.parseInt((String)(paramMap.get("review_grade"))));
+		//to.setReview_writer_seq(Integer.parseInt((String)(paramMap.get("review_smoke_years")));
+		to.setReview_smoke_years((Date)session.getAttribute("smoke_years"));
+
 		
 		int flag = dao.reviewWriteOk(to);
 		JSONObject reviewWriteOk = new JSONObject();
@@ -164,50 +132,23 @@ public class ReviewAPIController {
 		reviewModifyObj.put("review_grade", to.getReview_grade());
 		reviewModifyObj.put("review_like", to.getReview_like());
 		reviewModifyObj.put("review_dislike", to.getReview_dislike());
-		reviewModifyObj.put("review_file_name", to.getReview_file_name());
-		reviewModifyObj.put("review_file_size", to.getReview_file_size());
 		reviewModifyObj.put("review_smoke_years", to.getReview_smoke_years().toString());
-		reviewModifyObj.put("review_public", to.isReview_public());
 		
 		return reviewModifyObj;
 	}
 	
 	@RequestMapping(value = "api/review_modify_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONObject reviewModifyOk(HttpServletRequest request, HttpServletResponse response, 
-			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
+			@RequestBody Map<String,Object> paramMap) {
 		 
 		ReviewTO to = new ReviewTO();
-		String oldfilename = (String)paramMap.get("review_file_name");
-		
 		to.setReview_seq(Integer.parseInt((String)(paramMap.get("review_seq"))));
 		to.setReview_cigar_seq(Integer.parseInt((String)(paramMap.get("review_cigar_seq"))));
-		to.setReview_subject((String)(paramMap.get("review_subject")));
+		to.setReview_subject("제목");
 		to.setReview_content((String)(paramMap.get("review_content")));
 		to.setReview_grade(Integer.parseInt((String)(paramMap.get("review_grade"))));
-		to.setReview_file_name((String)(paramMap.get("review_file_name")));
-		to.setReview_file_size(Integer.parseInt((String)(paramMap.get("review_file_size"))));
-		to.setReview_public((boolean)paramMap.get("review_public"));
 		
-		try {
-			if( !upload.isEmpty() ) {
-				byte[] bytes = upload.getBytes();
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setReview_file_name(UUID.randomUUID().toString() + extention);
-				to.setReview_file_size((int) upload.getSize());
-				
-			    Path targetPath = Paths.get(filePath.trim() + oldfilename.trim());
-			    Path backuppath = Paths.get(backupFilePath.trim() + oldfilename.trim());			
-				Path path = Paths.get(filePath.trim() + to.getReview_file_name().trim());
-				
-				Files.write(path, bytes);
-			    Files.copy(targetPath, backuppath);;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
-		
-		int flag = dao.reviewModifyOk(to, oldfilename);
+		int flag = dao.reviewModifyOk(to);
 		JSONObject reviewModifyOk = new JSONObject();
 		reviewModifyOk.put("flag", flag);
 		return reviewModifyOk;
@@ -232,10 +173,7 @@ public class ReviewAPIController {
 		reviewDeleteObj.put("review_grade", to.getReview_grade());
 		reviewDeleteObj.put("review_like", to.getReview_like());
 		reviewDeleteObj.put("review_dislike", to.getReview_dislike());
-		reviewDeleteObj.put("review_file_name", to.getReview_file_name());
-		reviewDeleteObj.put("review_file_size", to.getReview_file_size());
 		reviewDeleteObj.put("review_smoke_years", to.getReview_smoke_years().toString());
-		reviewDeleteObj.put("review_public", to.isReview_public());
 		
 		return reviewDeleteObj;
 	}
@@ -247,17 +185,6 @@ public class ReviewAPIController {
 		to.setReview_seq(Integer.parseInt((String)(paramMap.get("review_seq"))));
 		to.setReview_cigar_seq(Integer.parseInt((String)(paramMap.get("review_cigar_seq"))));
 		to.setReview_writer_seq((int)session.getAttribute("member_seq"));
-		try {
-			to = dao.reviewDelete(to);
-			Path targetPath = Paths.get(filePath.trim() + to.getReview_cigar_seq());
-			Path backuppath = Paths.get(backupFilePath.trim() + to.getReview_file_name());		
-			Files.copy(targetPath, backuppath);
-			System.out.println(to.getReview_file_name());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		to.setReview_file_name(to.getReview_file_name());
 		int flag = dao.reviewDeleteOk(to);
 		JSONObject reviewDeleteOk = new JSONObject();
 		reviewDeleteOk.put("flag", flag);
@@ -329,10 +256,7 @@ public class ReviewAPIController {
 			obj.put("review_grade", to2.getReview_grade());
 			obj.put("reveiw_like", to2.getReview_like());
 			obj.put("reveiw_dislike", to2.getReview_dislike());
-			obj.put("review_file_name", to2.getReview_file_name());
-			obj.put("review_file_size", to2.getReview_file_size());
 			obj.put("review_smoke_years", to2.getReview_smoke_years());
-			obj.put("review_public", to.isReview_public());
 			cigarSearchArray.add(obj);
 		}
 		return cigarSearchArray;
@@ -408,9 +332,9 @@ public class ReviewAPIController {
 		to.setReview_cmt_seq(Integer.parseInt((String)(paramMap.get("review_cmt_seq"))));
 		to.setReview_pseq(Integer.parseInt((String)(paramMap.get("review_pseq"))));
 		to.setReview_cmt_writer_seq((int)session.getAttribute("member_seq"));
-		to.setReview_grp(Integer.parseInt((String)(paramMap.get("review_grp"))));
-		to.setReview_grps(Integer.parseInt((String)(paramMap.get("review_grps"))));
-		to.setReview_grpl(Integer.parseInt((String)(paramMap.get("review_grpl"))));
+		to.setReview_grp(0);
+		to.setReview_grps(0);
+		to.setReview_grpl(0);
 		to.setReview_cmt_writer((String)session.getAttribute("nickname"));
 		to.setReview_cmt_content((String)(paramMap.get("review_cmt_content")));
 		int flag = cmtDAO.reviewCmtWriteOk(to);
@@ -445,13 +369,7 @@ public class ReviewAPIController {
 		ReviewCommentTO to = new ReviewCommentTO();
 		to.setReview_cmt_seq(Integer.parseInt((String)(paramMap.get("review_cmt_seq"))));
 		to.setReview_pseq(Integer.parseInt((String)(paramMap.get("review_pseq"))));
-		to.setReview_cmt_writer_seq(Integer.parseInt((String)(paramMap.get("review_cmt_writer_seq"))));
-		to.setReview_grp(Integer.parseInt((String)(paramMap.get("review_grp"))));
-		to.setReview_grps(Integer.parseInt((String)(paramMap.get("review_grps"))));
-		to.setReview_grpl(Integer.parseInt((String)(paramMap.get("review_grpl"))));
-		to.setReview_cmt_writer((String)(paramMap.get("review_cmt_writer")));
 		to.setReview_cmt_content((String)(paramMap.get("review_cmt_content")));
-		to.setReview_cmt_reg_date(Date.valueOf((String)(paramMap.get("review_cmt_reg_date"))));
 		int flag = cmtDAO.reviewCmtWriteOk(to);
 		JSONObject reviewCmtModifyOk = new JSONObject();
 		reviewCmtModifyOk.put("flag", flag);

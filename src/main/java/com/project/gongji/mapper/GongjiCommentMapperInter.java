@@ -45,9 +45,8 @@ public interface GongjiCommentMapperInter {
 			+ "from gongji_comment where gongji_cmt_seq=#{gongji_cmt_seq}")
 	GongjiCommentTO gongjiCommentModify(GongjiCommentTO to);
 	
-	@Update("update gongji_comment set gongji_cmt_seq=#{gongji_cmt_seq}, gongji_pseq=#{gongji_pseq}, gongji_cmt_writer_seq=#{gongji_cmt_writer_seq}, "
-			+ "gongji_grp=#{gongji_grp}, gongji_grps=#{gongji_grps}, gongji_grpl=#{gongji_grpl}, "
-			+ "gongji_cmt_writer=#{gongji_cmt_writer}, gongji_cmt_content=#{gongji_cmt_content}, gongji_cmt_reg_date=#{gongji_cmt_reg_date} "
+	@Update("update gongji_comment set gongji_pseq=#{gongji_pseq}, "
+			+ "gongji_cmt_content=#{gongji_cmt_content} "
 			+ "where gongji_cmt_seq=#{gongji_cmt_seq}")
 	int gongjiCommentModifyOk(GongjiCommentTO to);
 	

@@ -27,7 +27,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/review/modify_ok.do" method="get">
+	<form action="/review/modify_ok.do"  method="post" enctype="multipart/form-data">
 		글 번호 <input type="text" name="review_seq" value="<%=review_seq %>" readonly /> <br/>
 		글쓴이 번호 <input type="text" name="review_writer_seq" value="<%=review_writer_seq %>" readonly /> <br/>
 		담배 번호 <input type="text" name="review_cigar_seq" value="<%=review_cigar_seq %>" readonly /> <br/>
@@ -40,8 +40,9 @@
 		평점 <input type="text" name="review_grade"  value="<%=review_grade %>" /> <br/>
 		좋아요 <input type="text" name="review_like"  value="<%=review_like %>" readonly /> <br/>
 		싫어요 <input type="text" name="review_dislike"  value="<%=review_dislike %>" readonly /> <br/>
-		사진이름 <input type="text" name="review_file_name" value="<%=review_file_name %>" /> <br/>
-		사진크기 <input type="text" name="review_file_size" value="<%=review_file_size %>" /> <br/>
+		파일 <input type="file" name="upload"><br>
+		사진이름 <input type="text" name="review_file_name" value="<%=review_file_name %>" readonly/> <br/>
+		사진크기 <input type="text" name="review_file_size" value="<%=review_file_size %>" readonly/> <br/>
 		흡연 연차 <input type="text" name="review_smoke_years" value="<%=review_smoke_years %>" readonly /> <br/>
 		<input type="submit" value="전송">
 	</form>

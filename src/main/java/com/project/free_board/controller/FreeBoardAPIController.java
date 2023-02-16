@@ -17,11 +17,14 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,9 +63,6 @@ public class FreeBoardAPIController {
 			obj.put("free_reg_date", to.getFree_reg_date().toString());
 			obj.put("free_smoke_years", to.getFree_smoke_years().toString());
 			obj.put("free_cmt_hit", to.getFree_cmt_count());
-			obj.put("free_file_name", to.getFree_file_name());
-			obj.put("free_file_size", to.getFree_file_size());
-			obj.put("free_public",to.isFree_public());
 			
 			freeLists.add(obj);
 		}
@@ -95,9 +95,6 @@ public class FreeBoardAPIController {
 		freeViewObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeViewObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeViewObj.put("free_cmt_hit", to.getFree_cmt_count());
-		freeViewObj.put("free_file_name", to.getFree_file_name());
-		freeViewObj.put("free_file_size", to.getFree_file_size());
-		freeViewObj.put("free_public",to.isFree_public());
 		
 		return freeViewObj;
 		
@@ -108,10 +105,13 @@ public class FreeBoardAPIController {
 		 
 	}
 	
+//	@RequestMapping(value = "/api/free_write_ok.do", method = {RequestMethod.POST}, consumes="multipart/form-data")
+//	public JSONObject freeWriteOk(HttpServletRequest request, HttpServletResponse response, 
+//			@RequestParam(value = "formData", required = false) MultipartFile upload, @RequestBody Map<String,Object> paramMap) {
 	@RequestMapping(value = "/api/free_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONObject freeWriteOk(HttpServletRequest request, HttpServletResponse response, 
-			MultipartFile upload, @RequestBody Map<String,Object> paramMap) {
-		 
+			@RequestBody MultipartFile upload, @RequestBody Map<String,Object> paramMap) {
+	 
 		HttpSession session = request.getSession();
 		FreeBoardTO to = new FreeBoardTO();
 		
@@ -120,23 +120,9 @@ public class FreeBoardAPIController {
 		to.setFree_subject((String)(paramMap.get("title")));
 		to.setFree_content((String)(paramMap.get("body")));
 		to.setFree_smoke_years((Date)session.getAttribute("smoke_years"));
-		to.setFree_public((boolean)paramMap.get("free_public"));
+		System.out.println(session.getAttribute("member_seq"));
 		
-		//System.out.println(request.getAttribute("free_public_true"));
-		try {
-			
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setFree_file_name(UUID.randomUUID().toString() + extention);
-				to.setFree_file_size((int)upload.getSize());
-				byte[] bytes = upload.getBytes();
-				Path path = Paths.get((filePath + to.getFree_file_name()).trim());
-		        Files.write(path, bytes);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[IO 에러] : " + e.getMessage());
-		}
+		
 		
 		int flag = dao.freeWrite_Ok(to);
 		JSONObject freeWriteOk = new JSONObject();
@@ -163,9 +149,6 @@ public class FreeBoardAPIController {
 		freeModifyObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeModifyObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeModifyObj.put("free_cmt_count", to.getFree_cmt_count());
-		freeModifyObj.put("free_file_name", to.getFree_file_name());
-		freeModifyObj.put("free_file_size", to.getFree_file_size());
-		freeModifyObj.put("free_public", to.isFree_public());
 		
 		return freeModifyObj;
 	}
@@ -176,36 +159,12 @@ public class FreeBoardAPIController {
 		FreeBoardTO to = new FreeBoardTO();
 		String oldfilename = (String)(paramMap.get("free_file_name"));
 		
-		try {
 			to.setFree_seq(Integer.parseInt((String)(paramMap.get("free_seq"))));
 			to.setFree_subject((String)(paramMap.get("free_subject")));
 			to.setFree_content((String)(paramMap.get("free_content")));
-			to.setFree_public((boolean)paramMap.get("free_public"));
-			if( !upload.isEmpty() ) {
-				byte[] bytes = upload.getBytes();
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setFree_file_name(UUID.randomUUID().toString() + extention);
-				to.setFree_file_size((int) upload.getSize());
-				
-			    Path targetPath = Paths.get(filePath.trim() + oldfilename.trim());
-			    Path backuppath = Paths.get(backupFilePath.trim() + oldfilename.trim());			
-				Path path = Paths.get(filePath.trim() + to.getFree_file_name().trim());
-				
-				Files.write(path, bytes);
-			    Files.copy(targetPath, backuppath);;
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+			
 		
-		int flag = dao.freeModifyOk(to, oldfilename);
+		int flag = dao.freeModifyOk(to);
 		JSONObject freeModifyOk = new JSONObject();
 		freeModifyOk.put("flag", flag);
 		return freeModifyOk;
@@ -231,8 +190,6 @@ public class FreeBoardAPIController {
 		freeDeleteObj.put("free_reg_date", to.getFree_reg_date().toString());
 		freeDeleteObj.put("free_smoke_years", to.getFree_smoke_years().toString());
 		freeDeleteObj.put("free_cmt_count", to.getFree_cmt_count());
-		freeDeleteObj.put("free_file_name", to.getFree_file_name());
-		freeDeleteObj.put("free_file_size", to.getFree_file_size());
 		
 		return freeDeleteObj;
 	}
@@ -243,19 +200,8 @@ public class FreeBoardAPIController {
 		FreeBoardTO to = new FreeBoardTO();
 		
 		to.setFree_seq(Integer.parseInt((String)(paramMap.get("free_seq"))));
-		to.setFree_file_name((String)(paramMap.get("free_file_name")));
 		to.setFree_writer_seq((int)session.getAttribute("member_seq"));
-		try {
-			to = dao.freeDelete(to);
-			Path targetPath = Paths.get(filePath.trim() + to.getFree_file_name());
-			Path backuppath = Paths.get(backupFilePath.trim() + to.getFree_file_name());		
-			Files.copy(targetPath, backuppath);
-			System.out.println(to.getFree_file_name());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		to.setFree_file_name(to.getFree_file_name());
+
 		int flag = dao.freeDeleteOk(to);
 		JSONObject freedeleteOk = new JSONObject();
 		freedeleteOk.put("flag", flag);
@@ -285,10 +231,7 @@ public class FreeBoardAPIController {
 			obj.put("free_content", to2.getFree_content());
 			obj.put("free_hit", to2.getFree_hit());
 			obj.put("free_cmt_count", to2.getFree_cmt_count());
-			obj.put("free_file_size", to2.getFree_file_size());
-			obj.put("free_file_name", to2.getFree_file_name());
 			obj.put("free_smoke_years", to2.getFree_smoke_years());
-			obj.put("free_public", to2.isFree_public());
 			obj.put("free_reg_date", to2.getFree_reg_date());
 			freeSearchArray.add(obj);
 		}
@@ -370,9 +313,9 @@ public class FreeBoardAPIController {
 		to.setFree_cmt_seq(Integer.parseInt((String)(paramMap.get("free_cmt_seq"))));
 		to.setFree_pseq(Integer.parseInt((String)(paramMap.get("free_pseq"))));
 		to.setFree_cmt_writer_seq((int)session.getAttribute("member_seq"));
-		to.setFree_grp(Integer.parseInt((String)(paramMap.get("free_grp"))));
-		to.setFree_grps(Integer.parseInt((String)(paramMap.get("free_grps"))));
-		to.setFree_grpl(Integer.parseInt((String)(paramMap.get("free_grpl"))));
+		to.setFree_grp(0);
+		to.setFree_grps(0);
+		to.setFree_grpl(0);
 		to.setFree_cmt_writer((String)session.getAttribute("nickname"));
 		to.setFree_cmt_content((String)(paramMap.get("free_cmt_content")));
 		int flag = cmtDAO.freeCmtWriteOk(to);
@@ -407,13 +350,10 @@ public class FreeBoardAPIController {
 		FreeBoardCommentTO to = new FreeBoardCommentTO();
 		to.setFree_cmt_seq(Integer.parseInt((String)(paramMap.get("free_cmt_seq"))));
 		to.setFree_pseq(Integer.parseInt((String)(paramMap.get("free_pseq"))));
-		to.setFree_cmt_writer_seq(Integer.parseInt((String)(paramMap.get("free_cmt_writer_seq"))));
-		to.setFree_grp(Integer.parseInt((String)(paramMap.get("free_grp"))));
-		to.setFree_grps(Integer.parseInt((String)(paramMap.get("free_grps"))));
-		to.setFree_grpl(Integer.parseInt((String)(paramMap.get("free_grpl"))));
-		to.setFree_cmt_writer((String)(paramMap.get("free_cmt_writer")));
+		to.setFree_grp(0);
+		to.setFree_grps(0);
+		to.setFree_grpl(0);
 		to.setFree_cmt_content((String)(paramMap.get("free_cmt_content")));
-		to.setFree_cmt_reg_date(Date.valueOf((String)(paramMap.get("free_cmt_reg_date"))));
 		int flag = cmtDAO.freeCmtWriteOk(to);
 		JSONObject freeCmtModifyOk = new JSONObject();
 		freeCmtModifyOk.put("flag", flag);

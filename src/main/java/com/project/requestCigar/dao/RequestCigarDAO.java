@@ -1,6 +1,5 @@
 package com.project.requestCigar.dao;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -16,8 +15,6 @@ public class RequestCigarDAO {
 	
 	@Autowired
 	private RequestCigarMapperInter requestCigarMapperInter;
-	
-	private String filePath = System.getProperty("user.dir") + "/src/main/webapp/uploads/reviewUpload/";
 	
 	public ArrayList<RequestCigarTO> requestList() {
 		ArrayList<RequestCigarTO> requestLists = requestCigarMapperInter.requestList();
@@ -51,30 +48,16 @@ public class RequestCigarDAO {
 		return to;
 	}
 	
-	public int requestModifyOk(RequestCigarTO to, String oldfilename) {
+	public int requestModifyOk(RequestCigarTO to) {
+		int result = requestCigarMapperInter.requestModify_ok(to);
 		int flag = 2;
-		int result = 2;
-		if(to.getRequest_file_name() != null) {
-			result = requestCigarMapperInter.requestModify_ok(to);
-		} else {
-			result = requestCigarMapperInter.requestModify_ok_NoImage(to);
-		}
 		
 		if(result == 0){
 			// 비밀번호가 잘못된경우
 			flag = 1;
-			if( to.getRequest_file_name() != null ) {
-				File file = new File( filePath.trim(), oldfilename.trim() );
-				file.delete();
-			}
 		} else if(result == 1){
 			// 정상 작동
 			flag = 0;
-			if( to.getRequest_file_name() != null && oldfilename != null ) {
-				File file = new File( filePath.trim(), oldfilename.trim() );
-				//System.out.println(file.toString().trim());
-				file.delete();
-			}
 		}
 		return flag;
 	}
@@ -93,10 +76,6 @@ public class RequestCigarDAO {
 			flag = 1;
 		} else if(result == 1){
 			// 정상 작동
-			File file = new File( filePath.trim(), to.getRequest_file_name().trim());
-			//System.out.println(file.toString().trim());
-			//System.out.println(file);
-			file.delete();
 			flag = 0;
 		}
 		return flag;

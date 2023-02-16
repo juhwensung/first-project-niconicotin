@@ -59,10 +59,7 @@ public class RequestAPICigarController {
 			obj.put("request_cigar_name", to.getRequest_cigar_name());
 			obj.put("request_tar", to.getRequest_tar());
 			obj.put("request_nicotine", to.getRequest_nicotine());
-			obj.put("request_file_name", to.getRequest_file_name());
-			obj.put("request_file_size", to.getRequest_file_size());
 			obj.put("request_smoke_years", to.getRequest_smoke_years().toString());
-			obj.put("request_public", to.isRequest_public());
 			
 			requestLists.add(obj);
 		}
@@ -91,10 +88,7 @@ public class RequestAPICigarController {
 		requestViewObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestViewObj.put("request_tar", to.getRequest_tar());
 		requestViewObj.put("request_nicotine", to.getRequest_nicotine());
-		requestViewObj.put("request_file_name", to.getRequest_file_name());
-		requestViewObj.put("request_file_size", to.getRequest_file_size());
 		requestViewObj.put("request_smoke_years", to.getRequest_smoke_years().toString());
-		requestViewObj.put("request_public", to.isRequest_public());
 		
 		return requestViewObj;
 	}
@@ -106,12 +100,11 @@ public class RequestAPICigarController {
 	
 	@RequestMapping(value = "api/request_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONObject requestWriteOk(HttpServletRequest request, HttpServletResponse response, 
-			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
+			@RequestBody Map<String,Object> paramMap) {
 		
 		RequestCigarTO to = new RequestCigarTO();
 		HttpSession session = request.getSession();
-		
-		try {
+
 			to.setRequest_writer_seq((int)session.getAttribute("member_seq"));
 			to.setRequest_subject((String)(paramMap.get("request_subject")));
 			to.setRequest_writer((String)session.getAttribute("nickname"));
@@ -120,24 +113,8 @@ public class RequestAPICigarController {
 			to.setRequest_cigar_name((String)(paramMap.get("request_cigar_name")));
 			to.setRequest_tar(Double.parseDouble((String)(paramMap.get("request_tar"))));
 			to.setRequest_nicotine(Double.parseDouble((String)(paramMap.get("request_nicotine"))));
-			to.setRequest_file_name((String)(paramMap.get("request_file_name")));
-			to.setRequest_file_size(Integer.parseInt((String)(paramMap.get("request_file_size"))));
 			to.setRequest_smoke_years((Date)session.getAttribute("smoke_years"));
-			to.setRequest_public((boolean)paramMap.get("request_public"));
-			
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setRequest_file_name(UUID.randomUUID().toString() + extention);
-				to.setRequest_file_size((int)upload.getSize());
-				byte[] bytes = upload.getBytes();
-				Path path = Paths.get((filePath + to.getRequest_file_name()).trim());
-			    Files.write(path, bytes);
-			}
-		} catch (NumberFormatException e) {
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			System.out.println("[에러] : " + e.getMessage());
-		}
+
 		
 		int flag = dao.requestWriteOk(to);
 		JSONObject requestWriteOk = new JSONObject();
@@ -164,10 +141,7 @@ public class RequestAPICigarController {
 		requestModifyObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestModifyObj.put("request_tar", to.getRequest_tar());
 		requestModifyObj.put("request_nicotine", to.getRequest_nicotine());
-		requestModifyObj.put("request_file_name", to.getRequest_file_name());
-		requestModifyObj.put("request_file_size", to.getRequest_file_size());
 		requestModifyObj.put("request_smoke_years", to.getRequest_smoke_years().toString());
-		requestModifyObj.put("request_public", to.isRequest_public());
 
 		return requestModifyObj;
 	}
@@ -177,8 +151,7 @@ public class RequestAPICigarController {
 			@RequestParam Map<String,Object> paramMap,@RequestParam MultipartFile upload) {
 		 
 		RequestCigarTO to = new RequestCigarTO();
-		String oldfilename = (String)paramMap.get("request_file_name");
-		try {
+
 			to.setRequest_seq(Integer.parseInt((String)(paramMap.get("request_seq"))));
 			to.setRequest_subject((String)(paramMap.get("request_subject")));
 			to.setRequest_content((String)(paramMap.get("request_content")));
@@ -186,32 +159,9 @@ public class RequestAPICigarController {
 			to.setRequest_cigar_name((String)(paramMap.get("request_cigar_name")));
 			to.setRequest_tar(Double.parseDouble((String)(paramMap.get("request_tar"))));
 			to.setRequest_nicotine(Double.parseDouble((String)(paramMap.get("request_nicotine"))));
-			to.setRequest_public((boolean)paramMap.get("request_public"));
-			if( !upload.isEmpty() ) {
-				byte[] bytes = upload.getBytes();
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setRequest_file_name(UUID.randomUUID().toString() + extention);
-				to.setRequest_file_size((int) upload.getSize());
-				
-			    Path targetPath = Paths.get(filePath.trim() + oldfilename.trim());
-			    Path backuppath = Paths.get(backupFilePath.trim() + oldfilename.trim());			
-				Path path = Paths.get(filePath.trim() + to.getRequest_file_name().trim());
-				
-				Files.write(path, bytes);
-			    Files.copy(targetPath, backuppath);;
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+			
 		
-		int flag = dao.requestModifyOk(to, oldfilename);
+		int flag = dao.requestModifyOk(to);
 		JSONObject requestModifyOk = new JSONObject();
 		requestModifyOk.put("flag", flag);
 		return requestModifyOk;
@@ -236,10 +186,7 @@ public class RequestAPICigarController {
 		requestDeleteObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestDeleteObj.put("request_tar", to.getRequest_tar());
 		requestDeleteObj.put("request_nicotine", to.getRequest_nicotine());
-		requestDeleteObj.put("request_file_name", to.getRequest_file_name());
-		requestDeleteObj.put("request_file_size", to.getRequest_file_size());
 		requestDeleteObj.put("request_smoke_years", to.getRequest_smoke_years().toString());
-		requestDeleteObj.put("request_public", to.isRequest_public());
 
 		return requestDeleteObj;
 	}
@@ -250,18 +197,7 @@ public class RequestAPICigarController {
 		RequestCigarTO to = new RequestCigarTO();
 		to.setRequest_seq(Integer.parseInt((String)(paramMap.get("request_seq"))));
 		to.setRequest_writer_seq((int)session.getAttribute("member_seq"));
-		try {
-			to = dao.requestDelete(to);
-			Path targetPath = Paths.get(filePath.trim() + to.getRequest_file_name());
-			Path backuppath = Paths.get(backupFilePath.trim() + to.getRequest_file_name());		
-			Files.copy(targetPath, backuppath);
-			System.out.println(to.getRequest_file_name());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
 		
-		to.setRequest_file_name(to.getRequest_file_name());
 		int flag = dao.requestDeleteOk(to);
 		JSONObject requestdeleteOk = new JSONObject();
 		requestdeleteOk.put("flag", flag);
@@ -338,9 +274,9 @@ public class RequestAPICigarController {
 		to.setRequest_cmt_seq(Integer.parseInt((String)(paramMap.get("request_cmt_seq"))));
 		to.setRequest_pseq(Integer.parseInt((String)(paramMap.get("request_pseq"))));
 		to.setRequest_cmt_writer_seq((int)session.getAttribute("member_seq"));
-		to.setRequest_grp(Integer.parseInt((String)(paramMap.get("request_grp"))));
-		to.setRequest_grps(Integer.parseInt((String)(paramMap.get("request_grps"))));
-		to.setRequest_grpl(Integer.parseInt((String)(paramMap.get("request_grpl"))));
+		to.setRequest_grp(0);
+		to.setRequest_grps(0);
+		to.setRequest_grpl(0);
 		to.setRequest_cmt_writer((String)session.getAttribute("nickname"));
 		to.setRequest_cmt_content((String)(paramMap.get("request_cmt_content")));
 		int flag = cmtDAO.requestCmtWriteOk(to);
@@ -375,13 +311,7 @@ public class RequestAPICigarController {
 		RequestCigarCommentTO to = new RequestCigarCommentTO();
 		to.setRequest_cmt_seq(Integer.parseInt((String)(paramMap.get("request_cmt_seq"))));
 		to.setRequest_pseq(Integer.parseInt((String)(paramMap.get("request_pseq"))));
-		to.setRequest_cmt_writer_seq(Integer.parseInt((String)(paramMap.get("request_cmt_writer_seq"))));
-		to.setRequest_grp(Integer.parseInt((String)(paramMap.get("request_grp"))));
-		to.setRequest_grps(Integer.parseInt((String)(paramMap.get("request_grps"))));
-		to.setRequest_grpl(Integer.parseInt((String)(paramMap.get("request_grpl"))));
-		to.setRequest_cmt_writer((String)(paramMap.get("request_cmt_writer")));
 		to.setRequest_cmt_content((String)(paramMap.get("request_cmt_content")));
-		to.setRequest_cmt_reg_date(Date.valueOf((String)(paramMap.get("request_cmt_reg_date"))));
 		int flag = cmtDAO.requestCmtWriteOk(to);
 		JSONObject requestCmtModifyOk = new JSONObject();
 		requestCmtModifyOk.put("flag", flag);
@@ -412,8 +342,6 @@ public class RequestAPICigarController {
 			obj.put("request_cigar_name", to2.getRequest_cigar_name());
 			obj.put("request_request_tar", to2.getRequest_tar());
 			obj.put("request_nicotine", to2.getRequest_nicotine());
-			obj.put("request_file_name_", to2.getRequest_file_name());
-			obj.put("request_file_size", to2.getRequest_file_size());
 			obj.put("request_reg_date", to2.getRequest_reg_date());
 			obj.put("request_hit", to2.getRequest_hit());
 			reqeustSearchArray.add(obj);

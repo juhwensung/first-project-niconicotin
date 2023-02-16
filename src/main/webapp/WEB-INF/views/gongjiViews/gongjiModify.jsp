@@ -24,7 +24,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/gongji/modify_ok.do" method="get">
+	<form action="/gongji/modify_ok.do" method="post" enctype="multipart/form-data">
 		글 번호 <input type="text" name="gongji_seq" value="<%=gongji_seq %>" readonly /> <br/>
 		글쓴이 번호 <input type="text" name="gongji_writer_seq" value="<%=gongji_writer_seq %>" readonly /> <br/>
 		리뷰 제목 <input type="text" name="gongji_subject" value="<%=gongji_suject %>" /> <br/>
@@ -33,8 +33,9 @@
 		리뷰 내용 <input type="text" name="gongji_content" value="<%=gongji_content %>" /> <br/>
 		조회수 <input type="text" name="gongji_hit" value="<%=gongji_hit %>" readonly /> <br/>
 		댓글 수 <input type="text" name="gongji_cmt_count" value="<%=gongji_cmt_count %>" readonly /> <br/>
-		사진이름 <input type="text" name="gongji_file_name" value="<%=gongji_file_name %>" /> <br/>
-		사진크기 <input type="text" name="gongji_file_size" value="<%=gongji_file_size %>" /> <br/>
+		파일 <input type="file" name="upload"> <br>
+		파일이름 : <input type="text" name="gongji_file_name" value=" <%= gongji_file_name %>" readonly/><br>
+		사진크기 <input type="text" value="<%=gongji_file_size %>" /> <br/>
 		흡연 연차 <input type="text" name="gongji_smoke_years" value="<%=gongji_smoke_years %>" readonly /> <br/>
 		공개 <input type="checkbox" name="gongji_public" checked="<%=gongji_public %>"> <br/>
 		<input type="submit" value="전송">

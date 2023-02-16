@@ -44,9 +44,9 @@ public interface FreeBoardCommentMapperInter {
 			+ "from free_comment where free_cmt_seq=#{free_cmt_seq}")
 	FreeBoardCommentTO freeCommentModify(FreeBoardCommentTO to);
 	
-	@Update("update free_comment set free_cmt_seq=#{free_cmt_seq}, free_pseq=#{free_pseq}, free_cmt_writer_seq=#{free_cmt_writer_seq}, "
+	@Update("update free_comment set free_pseq=#{free_pseq}, "
 			+ "free_grp=#{free_grp}, free_grps=#{free_grps}, free_grpl=#{free_grpl}, "
-			+ "free_cmt_writer=#{free_cmt_writer}, free_cmt_content=#{free_cmt_content}, free_cmt_reg_date=#{free_cmt_reg_date} "
+			+ "free_cmt_content=#{free_cmt_content} "
 			+ "where free_cmt_seq=#{free_cmt_seq}")
 	int freeCommentModifyOk(FreeBoardCommentTO to);
 	

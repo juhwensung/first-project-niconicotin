@@ -7,17 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/cigar/write_ok.do" method="get">
+	<form action="/cigar/write_ok.do" method="post" enctype="multipart/form-data">
 		글쓴이 번호 <input type="text" name="cigar_writer_seq" value="1"> <br/>
 		브랜드 <input type="text" name="cigar_brand"> <br/>
 		담배이름 <input type="text" name="cigar_name"> <br/>
 		타르량 <input type="text" name="cigar_tar"> <br/>
 		니코틴양 <input type="text" name="cigar_nicotine"> <br/>
-		사진이름 <input type="text" name="cigar_file_name"> <br/>
-		사진크기 <input type="text" name="cigar_file_size"> <br/>
 		해시 태그 <input type="text" name="cigar_hash_tag"> <br/>
 		설명 <input type="text" name="cigar_content"> <br/>
 		평점 <input type="text" name="cigar_total_grade" value="4.2"> <br/>
+		파일 <input type="file" name="upload">
 		<input type="submit" value="전송">
 	</form>
 	

@@ -14,7 +14,7 @@ import com.project.requestCigar.to.RequestCigarTO;
 public interface RequestCigarMapperInter {
 
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date, request_content, request_hit, request_cmt_count, "
-			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_file_name, request_file_size, request_smoke_years, request_public "
+			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_smoke_years "
 			+ "from cigar_request order by request_seq desc")
 	ArrayList<RequestCigarTO> requestList();
 	
@@ -22,31 +22,26 @@ public interface RequestCigarMapperInter {
 	int requestView_hit(RequestCigarTO to);
 	
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date, request_content, request_hit, request_cmt_count, "
-			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_file_name, request_file_size, request_smoke_years, request_public "
+			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_smoke_years "
 			+ "from cigar_request where request_seq = #{request_seq}")
 	RequestCigarTO requestView(RequestCigarTO to);
 	
 	@Insert("insert into cigar_request values (0, #{request_writer_seq}, #{request_subject}, #{request_writer}, now(), #{request_content}, 0, 0, "
-			+ "#{request_cigar_brand}, #{request_cigar_name}, #{request_tar}, #{request_nicotine}, #{request_file_name}, #{request_file_size}, #{request_smoke_years}, #{request_public})")
+			+ "#{request_cigar_brand}, #{request_cigar_name}, #{request_tar}, #{request_nicotine}, #{request_smoke_years})")
 	int requestWirte_ok(RequestCigarTO to);
 
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date, request_content, request_hit, request_cmt_count, "
-			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_file_name, request_file_size, request_smoke_years, request_public "
+			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_smoke_years "
 			+ "from cigar_request where request_seq = #{request_seq}")
 	RequestCigarTO requestModify(RequestCigarTO to);
 	
 	@Update("update cigar_request set request_subject=#{request_subject}, request_content=#{request_content}, request_cigar_brand=#{request_cigar_brand}, "
-			+ "request_cigar_name=#{request_cigar_name}, request_tar=#{request_tar}, request_nicotine=#{request_nicotine}, request_file_name=#{request_file_name}, request_file_size=#{request_file_size}, request_public=#{request_public} "
+			+ "request_cigar_name=#{request_cigar_name}, request_tar=#{request_tar}, request_nicotine=#{request_nicotine} "
 			+ "where request_seq=#{request_seq}")
 	int requestModify_ok(RequestCigarTO to);
 	
-	@Update("update cigar_request set request_subject=#{request_subject}, request_content=#{request_content}, request_cigar_brand=#{request_cigar_brand}, "
-			+ "request_cigar_name=#{request_cigar_name}, request_tar=#{request_tar}, request_nicotine=#{request_nicotine}, request_public=#{request_public} "
-			+ "where request_seq=#{request_seq}")
-	int requestModify_ok_NoImage(RequestCigarTO to);
-	
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date, request_content, request_hit, request_cmt_count, "
-			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_file_name, request_file_size, request_smoke_years, request_public "
+			+ "request_cigar_brand, request_cigar_name, request_tar, request_nicotine, request_smoke_years "
 			+ "from cigar_request where request_seq = #{request_seq}")
 	RequestCigarTO requestDelete(RequestCigarTO to);
 	
@@ -55,7 +50,7 @@ public interface RequestCigarMapperInter {
 	
 	@Select("select request_seq, request_writer_seq, request_subject, request_writer, request_reg_date,"
 			+ " request_hit, request_content, request_hit, request_cmt_count, request_cigar_brand, request_cigar_name,"
-			+ " request_tar, request_nicotine, request_file_name, request_file_size, request_smoke_years, request_public from cigar_request"
+			+ " request_tar, request_nicotine, request_smoke_years from cigar_request"
 			+ " where request_subject like CONCAT('%', #{request_subject}, '%')"
 			+ " or request_writer like CONCAT('%', #{request_writer}, '%')"
 			+ " or request_content like CONCAT('%', #{request_content}, '%')"

@@ -44,9 +44,8 @@ public interface RequestCigarCommentMapperInter {
 			+ "from request_comment where request_cmt_seq=#{request_cmt_seq}")
 	RequestCigarCommentTO requestCommentModify(RequestCigarCommentTO to);
 	
-	@Update("update request_comment set request_cmt_seq=#{request_cmt_seq}, request_pseq=#{request_pseq}, request_cmt_writer_seq=#{request_cmt_writer_seq}, "
-			+ "request_grp=#{request_grp}, request_grps=#{request_grps}, request_grpl=#{request_grpl}, "
-			+ "request_cmt_writer=#{request_cmt_writer}, request_cmt_content=#{request_cmt_content}, request_cmt_reg_date=#{request_cmt_reg_date} "
+	@Update("update request_comment set request_pseq=#{request_pseq}, "
+			+ "request_cmt_content=#{request_cmt_content} "
 			+ "where request_cmt_seq=#{request_cmt_seq}")
 	int requestCommentModifyOk(RequestCigarCommentTO to);
 	

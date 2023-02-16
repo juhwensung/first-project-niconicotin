@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/requestCigar/write_ok.do" method="get">
+	<form action="/requestCigar/write_ok.do" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="request_writer_seq" value="1"> <br/>
 		담배요청 제목 <input type="text" name="request_subject"> <br/>
 		<input type="hidden" name="request_writer" value="이름"> <br/>
@@ -16,8 +16,9 @@
 		담배명 <input type="text" name="request_cigar_name"> <br/>
 		타르량 <input type="text" name="request_tar"> <br/>
 		니코틴양 <input type="text" name="request_nicotine"> <br/>
-		사진이름 <input type="text" name="request_file_name"> <br/>
-		사진크기 <input type="text" name="request_file_size"> <br/>
+		파일 <input type="file" name="upload">
+		공개 <input type="radio" name="Request_public" value="public" checked="checked">
+		비공개 <input type="radio" name="Request_public" value="private">
 		<input type="submit" value="전송">
 	</form>
 	

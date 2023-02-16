@@ -19,10 +19,8 @@
     	String email = to.getEmail();
     	String name = to.getName();
     	String nickname = to.getNickname();
-    	String address = to.getAddress();
     	String phoneNum = to.getPhone();
     	Object smoke_years = request.getAttribute("smoke_years");
-    	String prefer_cigar = to.getPrefer_cigar();
     	Date sign_date = to.getSign_date();
     	Date birthday = to.getBirthday();
     	
@@ -47,8 +45,6 @@
 이메일: <%= email %> <br>
 이름: <%= name %> <br>
 닉네임: <%= nickname %> <br>
-주소: <%= address %> <br>
-선호 담배: <%= prefer_cigar %> <br>
 흡연 연차: <%= smoke_years %>년 <br>
 폰 번호 : <%= phoneNum %> <br>
 가입날짜: <%= sign_date %> <br>

@@ -27,7 +27,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="/requestCigar/modify_ok.do" method="get">
+	<form action="/requestCigar/modify_ok.do" method="post" enctype="multipart/form-data">
 		글 번호 <input type="text" name="request_seq" value="<%=request_seq %>" readonly /> <br/>
 		글쓴이 번호 <input type="text" name="request_writer_seq" value="<%=request_writer_seq %>" readonly /> <br/>
 		리뷰 제목 <input type="text" name="request_subject" value="<%=request_suject %>" /> <br/>
@@ -40,9 +40,12 @@
 		담배명 <input type="text" name="request_cigar_name" value="<%=request_cigar_name %>" /> <br/>
 		타르 <input type="text" name="request_tar" value="<%=request_tar %>" /> <br/>
 		니코틴 <input type="text" name="request_nicotine" value="<%=request_nicotine %>" /> <br/>
-		사진이름 <input type="text" name="request_file_name" value="<%=request_file_name %>" /> <br/>
-		사진크기 <input type="text" name="request_file_size" value="<%=request_file_size %>" /> <br/>
+		파일 <input type="file" name="upload">
+		사진이름 <input type="text" name="request_file_name" value="<%=request_file_name %>" readonly="readonly" /> <br/>
+		사진크기 <input type="text" name="request_file_size" value="<%=request_file_size %>" readonly="readonly"/> <br/>
 		흡연 연차 <input type="text" name="request_smoke_years" value="<%=request_smoke_years %>" readonly /> <br/>
+		공개 <input type="radio" name="free_public" value="public" checked="checked">
+		비공개 <input type="radio" name="free_public" value="private">
 		<input type="submit" value="전송">
 	</form>
 </body>

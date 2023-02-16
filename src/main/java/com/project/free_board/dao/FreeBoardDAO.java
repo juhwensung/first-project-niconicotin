@@ -45,33 +45,19 @@ public class FreeBoardDAO {
 		return to;
 	}
 	
-	public int freeModifyOk(FreeBoardTO to, String oldfilename) {
+	public int freeModifyOk(FreeBoardTO to) {
 		
 		int flag = 2;
-		int result = 2;
-		System.out.println("new:" + to.getFree_file_name());
-		System.out.println("old:" + oldfilename);
-		if(to.getFree_file_name() != null) {
-			result = freeBoardMapperInter.freeModify_Ok(to);
-		} else {
-			result = freeBoardMapperInter.freeModify_Ok_NoImage(to);
-		}
-		
+		int result = freeBoardMapperInter.freeModify_Ok(to);
+
 		if(result == 0){
 			// 비밀번호가 잘못된경우
 			flag = 1;
-			if( to.getFree_file_name() != null ) {
-				File file = new File( filePath.trim(), oldfilename.trim() );
-				file.delete();
-			}
+			
 		} else if(result == 1){
 			// 정상 작동
 			flag = 0;
-			if( to.getFree_file_name() != null && oldfilename != null ) {
-				File file = new File( filePath.trim(), oldfilename.trim() );
-				//System.out.println(file.toString().trim());
-				file.delete();
-			}
+			
 		}
 		return flag;
 	}
@@ -95,12 +81,7 @@ public class FreeBoardDAO {
 		} else if(result == 1){
 			// 정상 작동
 			flag = 0;
-			if( to.getFree_file_name() != null) {
-				File file = new File( filePath.trim(), to.getFree_file_name().trim());
-				//System.out.println(file.toString().trim());
-				//System.out.println(file);
-				file.delete();
-			}
+			
 		}
 		return flag;
 	}

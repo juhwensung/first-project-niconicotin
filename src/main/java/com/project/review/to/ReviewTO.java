@@ -21,8 +21,5 @@ public class ReviewTO {
 	private int review_grade;
 	private int review_like;
 	private int review_dislike;
-	private String review_file_name;
-	private int review_file_size;
 	private Date review_smoke_years;
-	private boolean review_public;
 }

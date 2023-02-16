@@ -44,9 +44,8 @@ public interface ReviewCommentMapperInter {
 			+ "from review_comment where review_cmt_seq=#{review_cmt_seq}")
 	ReviewCommentTO reviewCommentModify(ReviewCommentTO to);
 	
-	@Update("update review_comment set review_cmt_seq=#{review_cmt_seq}, review_pseq=#{review_pseq}, review_cmt_writer_seq=#{review_cmt_writer_seq}, "
-			+ "review_grp=#{review_grp}, review_grps=#{review_grps}, review_grpl=#{review_grpl}, "
-			+ "review_cmt_writer=#{review_cmt_writer}, review_cmt_content=#{review_cmt_content}, review_cmt_reg_date=#{review_cmt_reg_date} "
+	@Update("update review_comment set review_pseq=#{review_pseq} "
+			+ " review_cmt_content=#{review_cmt_content} "
 			+ "where review_cmt_seq=#{review_cmt_seq}")
 	int reviewCommentModifyOk(ReviewCommentTO to);
 	

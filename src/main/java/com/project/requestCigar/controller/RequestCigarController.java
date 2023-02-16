@@ -47,8 +47,6 @@ public class RequestCigarController {
 			obj.put("request_cigar_name", to.getRequest_cigar_name());
 			obj.put("request_tar", to.getRequest_tar());
 			obj.put("request_nicotine", to.getRequest_nicotine());
-			obj.put("request_file_name", to.getRequest_file_name());
-			obj.put("request_file_size", to.getRequest_file_size());
 			obj.put("request_smoke_years", to.getRequest_smoke_years());
 			
 			requestLists.add(obj);
@@ -83,8 +81,6 @@ public class RequestCigarController {
 		requestViewObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestViewObj.put("request_tar", to.getRequest_tar());
 		requestViewObj.put("request_nicotine", to.getRequest_nicotine());
-		requestViewObj.put("request_file_name", to.getRequest_file_name());
-		requestViewObj.put("request_file_size", to.getRequest_file_size());
 		requestViewObj.put("request_smoke_years", to.getRequest_smoke_years());
 		
 		ArrayList<RequestCigarCommentTO> CommentListTO = cmtDAO.requestCommentList(cmtTO);
@@ -130,8 +126,6 @@ public class RequestCigarController {
 		to.setRequest_cigar_name(request.getParameter("request_cigar_name"));
 		to.setRequest_tar(Double.parseDouble(request.getParameter("request_tar")));
 		to.setRequest_nicotine(Double.parseDouble(request.getParameter("request_nicotine")));
-		to.setRequest_file_name(request.getParameter("request_file_name"));
-		to.setRequest_file_size(Integer.parseInt(request.getParameter("request_file_size")));
 		//to.setRequest_writer_seq(Integer.parseInt(request.getParameter("request_smoke_years")));
 		
 		int flag = dao.requestWriteOk(to);
@@ -159,8 +153,6 @@ public class RequestCigarController {
 		requestModifyObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestModifyObj.put("request_tar", to.getRequest_tar());
 		requestModifyObj.put("request_nicotine", to.getRequest_nicotine());
-		requestModifyObj.put("request_file_name", to.getRequest_file_name());
-		requestModifyObj.put("request_file_size", to.getRequest_file_size());
 		requestModifyObj.put("request_smoke_years", to.getRequest_smoke_years());
 		mav.addObject("requestModifyObj", requestModifyObj);
 		mav.setViewName("requestViews/requestModify");
@@ -178,10 +170,7 @@ public class RequestCigarController {
 		to.setRequest_cigar_name(request.getParameter("request_cigar_name"));
 		to.setRequest_tar(Double.parseDouble(request.getParameter("request_tar")));
 		to.setRequest_nicotine(Double.parseDouble(request.getParameter("request_nicotine")));
-		to.setRequest_file_name(request.getParameter("request_file_name"));
-		to.setRequest_file_size(Integer.parseInt(request.getParameter("request_file_size")));
-		String rr = "";
-		int flag = dao.requestModifyOk(to, rr);
+		int flag = dao.requestModifyOk(to);
 		mav.addObject("flag", flag);
 		mav.setViewName("requestViews/requestModify_ok");
 		return mav;
@@ -206,8 +195,6 @@ public class RequestCigarController {
 		requestDeleteObj.put("request_cigar_name", to.getRequest_cigar_name());
 		requestDeleteObj.put("request_tar", to.getRequest_tar());
 		requestDeleteObj.put("request_nicotine", to.getRequest_nicotine());
-		requestDeleteObj.put("request_file_name", to.getRequest_file_name());
-		requestDeleteObj.put("request_file_size", to.getRequest_file_size());
 		requestDeleteObj.put("request_smoke_years", to.getRequest_smoke_years());
 		mav.addObject("requestDeleteObj", requestDeleteObj);
 		mav.setViewName("requestViews/requestDelete");

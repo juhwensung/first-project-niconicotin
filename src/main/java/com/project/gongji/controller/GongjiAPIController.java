@@ -85,10 +85,7 @@ public class GongjiAPIController {
 			obj.put("gongji_content", to2.getGongji_content());
 			obj.put("gongji_hit", to2.getGongji_hit());
 			obj.put("gongji_cmt_count", to2.getGongji_cmt_count());
-			obj.put("gongji_file_name", to2.getGongji_file_name());
-			obj.put("gongji_file_size", to2.getGongji_file_size());
 			obj.put("gongji_smoke_years", to2.getGongji_smoke_years().toString());
-			obj.put("gongji_public", to2.isGongji_public());
 			
 			gongjiLists.add(obj);
 		}
@@ -119,10 +116,7 @@ public class GongjiAPIController {
 		gongjiViewObj.put("gongji_content", to.getGongji_content());
 		gongjiViewObj.put("gongji_hit", to.getGongji_hit());
 		gongjiViewObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiViewObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiViewObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiViewObj.put("gongji_smoke_years", to.getGongji_smoke_years().toString());
-		gongjiViewObj.put("gongji_public", to.isGongji_public());
 		
 		return gongjiViewObj;
 	}
@@ -140,25 +134,13 @@ public class GongjiAPIController {
 		//System.out.println("session : " + session.getAttribute("member_seq"));
 		GongjiTO to = new GongjiTO();
 		
-		try {
+
 			to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
 			to.setGongji_subject((String)(paramMap.get("gongji_subject")));
 			to.setGongji_writer((String)session.getAttribute("nickname"));
 			to.setGongji_content((String)(paramMap.get("gongji_content")));
 			to.setGongji_smoke_years((Date)session.getAttribute("smoke_years"));
-			to.setGongji_public((boolean)request.getAttribute("gongji_public"));
-			if( !upload.isEmpty() ) {
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setGongji_file_name(UUID.randomUUID().toString() + extention);
-				to.setGongji_file_size((int)upload.getSize());
-				byte[] bytes = upload.getBytes();
-				Path path = Paths.get((filePath + to.getGongji_file_name()).trim());
-	            Files.write(path, bytes);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+
 
 		int flag = dao.gongjiWriteOk(to);
 		JSONObject gongjiWriteOk = new JSONObject();
@@ -181,10 +163,7 @@ public class GongjiAPIController {
 		gongjiModifyObj.put("gongji_content", to.getGongji_content());
 		gongjiModifyObj.put("gongji_hit", to.getGongji_hit());
 		gongjiModifyObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiModifyObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiModifyObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiModifyObj.put("gongji_smoke_years", to.getGongji_smoke_years().toString());
-		gongjiModifyObj.put("gongji_public", to.isGongji_public());
 
 		return gongjiModifyObj;
 	}
@@ -197,37 +176,14 @@ public class GongjiAPIController {
 		//System.out.println(paramMap.get("gongji_subject"));
 		//System.out.println(paramMap.get("gongji_content"));
 		GongjiTO to = new GongjiTO();
-		
-		String oldfilename = (String)paramMap.get("gongji_file_name");
-		
-		try {
+
 			to.setGongji_seq(Integer.valueOf((String)paramMap.get("gongji_seq")));
 			to.setGongji_subject((String)(paramMap.get("gongji_subject")));
 			to.setGongji_content((String)(paramMap.get("gongji_content")));
-			to.setGongji_public((boolean)paramMap.get("gongji_public"));
 			
-			if( !upload.isEmpty() ) {
-				byte[] bytes = upload.getBytes();
-				String extention = upload.getOriginalFilename().substring(upload.getOriginalFilename().indexOf("."));
-				to.setGongji_file_name(UUID.randomUUID().toString() + extention);
-				to.setGongji_file_size((int) upload.getSize());
-				
-			    Path targetPath = Paths.get(filePath.trim() + oldfilename.trim());
-			    Path backuppath = Paths.get(backupFilePath.trim() + oldfilename.trim());			
-				Path path = Paths.get(filePath.trim() + to.getGongji_file_name().trim());
-				
-				Files.write(path, bytes);
-			    Files.copy(targetPath, backuppath);;
-			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("[에러] : " + e.getMessage());
-		}
+
 		
-		int flag = dao.gongjiModifyOk(to, oldfilename);
+		int flag = dao.gongjiModifyOk(to);
 		JSONObject gongjiModifyOk = new JSONObject();
 		gongjiModifyOk.put("flag", flag);
 		return gongjiModifyOk;
@@ -248,10 +204,7 @@ public class GongjiAPIController {
 		gongjiDeleteObj.put("gongji_content", to.getGongji_content());
 		gongjiDeleteObj.put("gongji_hit", to.getGongji_hit());
 		gongjiDeleteObj.put("gongji_cmt_count", to.getGongji_cmt_count());
-		gongjiDeleteObj.put("gongji_file_name", to.getGongji_file_name());
-		gongjiDeleteObj.put("gongji_file_size", to.getGongji_file_size());
 		gongjiDeleteObj.put("gongji_smoke_years", to.getGongji_smoke_years().toString());
-		gongjiDeleteObj.put("gongji_public", to.isGongji_public());
 
 		return gongjiDeleteObj;
 	}
@@ -262,17 +215,7 @@ public class GongjiAPIController {
 		GongjiTO to = new GongjiTO();
 		to.setGongji_seq(Integer.parseInt((String)(paramMap.get("gongji_seq"))));
 		to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
-		try {
-			to = dao.gongjiDelete(to);
-			Path targetPath = Paths.get(filePath.trim() + to.getGongji_file_name());
-			Path backuppath = Paths.get(backupFilePath.trim() + to.getGongji_file_name());		
-			Files.copy(targetPath, backuppath);
-			System.out.println(to.getGongji_file_name());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		to.setGongji_file_name(to.getGongji_file_name());
+		
 		int flag = dao.gongjiDeleteOk(to);
 		JSONObject gongjideleteOk = new JSONObject();
 		gongjideleteOk.put("flag", flag);
@@ -348,9 +291,9 @@ public class GongjiAPIController {
 		to.setGongji_cmt_seq(Integer.parseInt((String)(paramMap.get("gongji_cmt_seq"))));
 		to.setGongji_pseq(Integer.parseInt((String)(paramMap.get("gongji_pseq"))));
 		to.setGongji_cmt_writer_seq((int)session.getAttribute("member_seq"));
-		to.setGongji_grp(Integer.parseInt((String)(paramMap.get("gongji_grp"))));
-		to.setGongji_grps(Integer.parseInt((String)(paramMap.get("gongji_grps"))));
-		to.setGongji_grpl(Integer.parseInt((String)(paramMap.get("gongji_grpl"))));
+		to.setGongji_grp(0);
+		to.setGongji_grps(0);
+		to.setGongji_grpl(0);
 		to.setGongji_cmt_writer((String)session.getAttribute("nickname"));
 		to.setGongji_cmt_content((String)(paramMap.get("gongji_cmt_content")));
 		int flag = cmtDAO.gongjiCmtWriteOk(to);
@@ -385,13 +328,7 @@ public class GongjiAPIController {
 		GongjiCommentTO to = new GongjiCommentTO();
 		to.setGongji_cmt_seq(Integer.parseInt((String)(paramMap.get("gongji_cmt_seq"))));
 		to.setGongji_pseq(Integer.parseInt((String)(paramMap.get("gongji_pseq"))));
-		to.setGongji_cmt_writer_seq(Integer.parseInt((String)(paramMap.get("gongji_cmt_writer_seq"))));
-		to.setGongji_grp(Integer.parseInt((String)(paramMap.get("gongji_grp"))));
-		to.setGongji_grps(Integer.parseInt((String)(paramMap.get("gongji_grps"))));
-		to.setGongji_grpl(Integer.parseInt((String)(paramMap.get("gongji_grpl"))));
-		to.setGongji_cmt_writer((String)(paramMap.get("gongji_cmt_writer")));
 		to.setGongji_cmt_content((String)(paramMap.get("gongji_cmt_content")));
-		to.setGongji_cmt_reg_date(Date.valueOf((String)(paramMap.get("gongji_cmt_reg_date"))));
 		int flag = cmtDAO.gongjiCmtWriteOk(to);
 		JSONObject gongjiCmtModifyOk = new JSONObject();
 		gongjiCmtModifyOk.put("flag", flag);
