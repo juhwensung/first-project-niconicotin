@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "Jua";
+  font-weight: 50;
+  src: url("./fonts/Jua-Regular.ttf");
+}
+
+.nicoft {
+  font-family: Jua;
+  color: white;
+  font-size: 20px;
+  height: 10px;
+  width: auto;
+}
+
+.niconav-btn {
+  overflow: hidden;
+  width: 90px;
+  height: auto;
+  border-radius: 7px;
+  background-color: black;
+  float: right;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  font-family: "BlackHanSans";
+}

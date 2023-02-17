@@ -1,0 +1,136 @@
+@font-face {
+  font-family: "Jua";
+  font-weight: 50;
+  src: url("./fonts/Jua-Regular.ttf");
+}
+
+.nicoSearch {
+  width: 20%;
+  height: 40px;
+  font-size: 30px;
+  margin-bottom: 20px;
+  float: right;
+  border-radius: 18px;
+}
+
+.nicobox {
+  width: 100%;
+  height: 50px;
+  border: solid;
+  cursor: pointer;
+  background-color: white;
+  /* border-radius: 10px; */
+  margin-top: 2px;
+}
+
+.nicoboxTitle {
+  float: left;
+
+  font-size: 20px;
+}
+
+.nicoBodySeq {
+  font-family: Jua;
+  float: left;
+  width: 10%;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.nicoBodySub {
+  font-family: Jua;
+  float: left;
+  margin-left: 8px;
+  border-left: solid;
+  width: 60%;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.nicoBodyDate {
+  font-family: Jua;
+  float: right;
+  width: 10%;
+  border-right: solid;
+  border-left: solid;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.nicoBodyHit {
+  font-family: Jua;
+  float: right;
+  width: 10%;
+  border-left: solid;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.nicoBodyUser {
+  font-family: Jua;
+  float: right;
+  text-align: center;
+  width: 100px;
+  margin-top: 12px;
+}
+
+.nnbox {
+  border: solid;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.tagtit {
+  border: solid;
+  background-color: darkgray;
+  height: 50px;
+  border-bottom: solid;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.llll {
+  margin-top: -10px;
+  width: 100%;
+}
+
+.cardseq {
+  font-family: Jua;
+  float: left;
+  margin-right: 30px;
+  border-right: solid;
+  width: 137px;
+  text-align: center;
+}
+
+.cardtitle {
+  font-family: Jua;
+  float: left;
+  border-right: solid;
+  width: 768px;
+  text-align: left;
+  font-size: 17px;
+  margin-right: 2px;
+}
+
+.carddate {
+  font-family: Jua;
+  width: 125px;
+  font-size: 13px;
+  text-align: center;
+  border-right: solid;
+}
+
+.cardhit {
+  font-family: Jua;
+  text-align: left;
+  font-size: 13px;
+}
+
+.carduser {
+  font-family: Jua;
+  font-size: 13px;
+  border-right: solid;
+  width: 101px;
+  text-align: center;
+}

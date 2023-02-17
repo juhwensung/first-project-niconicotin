@@ -1,0 +1,101 @@
+@font-face {
+  font-family: "BlackHanSans";
+  font-weight: 50;
+  src: url("../../../components/fonts/BlackHanSans-Regular.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Jua";
+  font-weight: 50;
+  src: url("../../../components/fonts/Jua-Regular.ttf");
+}
+
+.login-text {
+  margin-top: 100px;
+  margin-bottom: 50px;
+  color: black;
+  text-align: center;
+  font-size: 55px;
+  left: 59%;
+  font-family: "BlackHanSans";
+}
+
+.login-form {
+  position: absolute;
+  top: 59px;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 580px;
+  max-height: 800px;
+  padding: 0 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: whitesmoke;
+  overflow: hidden;
+}
+
+.login-id {
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.login-pw {
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.inputWrap {
+  display: flex;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+  background-color: white;
+  border: solid #e2e0e0;
+  margin-bottom: 40px;
+}
+
+.join-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  font-weight: 700;
+  background-color: black;
+  border-radius: 64px;
+  color: white;
+  cursor: pointer;
+  font-family: "Jua";
+  font-size: 30px;
+  margin-top: 60px;
+}
+
+.login-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  font-weight: 700;
+  background-color: black;
+  border-radius: 64px;
+  color: white;
+  cursor: pointer;
+  font-family: "Jua";
+  font-size: 30px;
+  margin-top: 40px;
+}
+
+.nico-id {
+  font-family: jua;
+}
+
+.nico-pw {
+  font-family: jua;
+}

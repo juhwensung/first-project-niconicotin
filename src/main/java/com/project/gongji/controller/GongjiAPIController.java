@@ -85,7 +85,7 @@ public class GongjiAPIController {
 			obj.put("gongji_content", to2.getGongji_content());
 			obj.put("gongji_hit", to2.getGongji_hit());
 			obj.put("gongji_cmt_count", to2.getGongji_cmt_count());
-			obj.put("gongji_smoke_years", to2.getGongji_smoke_years().toString());
+			//obj.put("gongji_smoke_years", to2.getGongji_smoke_years().toString());
 			
 			gongjiLists.add(obj);
 		}
@@ -128,7 +128,7 @@ public class GongjiAPIController {
 	
 	@RequestMapping(value = "api/gongji_write_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public JSONObject gongjiWriteOk(HttpServletRequest request, HttpServletResponse response, 
-			@RequestBody Map<String,Object> paramMap, @RequestParam MultipartFile upload) {
+			@RequestBody Map<String,Object> paramMap) {
 		HttpSession session = request.getSession();
 		//System.out.println("확인 : " + (String)(paramMap.get("gongji_subject")));
 		//System.out.println("session : " + session.getAttribute("member_seq"));
@@ -136,10 +136,10 @@ public class GongjiAPIController {
 		
 
 			to.setGongji_writer_seq((int)session.getAttribute("member_seq"));
-			to.setGongji_subject((String)(paramMap.get("gongji_subject")));
+			to.setGongji_subject((String)(paramMap.get("title")));
 			to.setGongji_writer((String)session.getAttribute("nickname"));
-			to.setGongji_content((String)(paramMap.get("gongji_content")));
-			to.setGongji_smoke_years((Date)session.getAttribute("smoke_years"));
+			to.setGongji_content((String)(paramMap.get("body")));
+			to.setGongji_smoke_years((Date)session.getAttribute("createdAt"));
 
 
 		int flag = dao.gongjiWriteOk(to);

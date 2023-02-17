@@ -1,0 +1,8 @@
+.cardpost {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  float: left;
+  margin-left: 38px;
+  margin-bottom: 30px;
+}

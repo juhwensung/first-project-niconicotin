@@ -1,0 +1,24 @@
+@font-face {
+  font-family: "BlackHanSans";
+  font-weight: 50;
+  src: url("../../components/fonts/BlackHanSans-Regular.ttf") format("truetype");
+}
+
+.Anicosub {
+  font-size: 55px;
+  left: 59%;
+  font-family: "BlackHanSans";
+}
+
+.Anico-btn {
+  overflow: hidden;
+  width: 3.5cm;
+  height: 55px;
+  border-radius: 7px;
+  background-color: black;
+  float: right;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  font-family: "BlackHanSans";
+}

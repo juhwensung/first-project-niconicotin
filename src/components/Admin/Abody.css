@@ -1,0 +1,123 @@
+@font-face {
+  font-family: "Jua";
+  font-weight: 50;
+  src: url("./fonts/Jua-Regular.ttf");
+}
+
+.AnicoSearch {
+  width: 100%;
+  height: 40px;
+  font-size: 30px;
+  margin-bottom: 20px;
+  float: right;
+  border-radius: 18px;
+}
+
+.Anicobox {
+  width: 100%;
+  height: 50px;
+  border: solid;
+  cursor: pointer;
+  background-color: white;
+  margin-top: 2px;
+}
+
+.AnicoboxTitle {
+  float: left;
+  margin-left: 30px;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.AnicoBodySeq {
+  font-family: Jua;
+  float: left;
+  width: 60px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.AnicoBodySub {
+  font-family: Jua;
+  float: left;
+  margin-left: 8px;
+  border-left: solid;
+  width: 100px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.AnicoBodyUser {
+  font-family: Jua;
+  float: left;
+  border-left: solid;
+  text-align: center;
+  width: 100px;
+  margin-top: 12px;
+}
+
+.Annbox {
+  font-family: Jua;
+  border: solid;
+  height: 100%;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.Atagtit {
+  border: solid;
+  background-color: darkgray;
+  height: 50px;
+  border-bottom: solid;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.Allll {
+  margin-top: -10px;
+  width: 100%;
+}
+
+.Acardseq {
+  float: left;
+  border-right: solid;
+  width: 40px;
+  text-align: left;
+  font-size: 17px;
+}
+
+.Acardtitle {
+  float: left;
+  border-right: solid;
+  width: 100px;
+  text-align: center;
+  margin-right: 2px;
+  font-size: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.Acarduser {
+  font-size: 17px;
+  width: 100px;
+  text-align: center;
+}
+
+.Acardhash {
+  font-size: 17px;
+  text-align: left;
+}
+
+.Adbtn {
+  float: right;
+  margin-left: 2px;
+  height: 30px;
+  width: 50px;
+}
+
+.Arbtn {
+  float: right;
+  margin-left: 30px;
+  height: 30px;
+  width: 50px;
+}

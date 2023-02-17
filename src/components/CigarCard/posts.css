@@ -1,0 +1,39 @@
+.cigarcard {
+  display: block;
+  height: 300px;
+  width: 270px;
+  border-radius: 15px;
+  color: white;
+  background-color: darkgrey;
+  display: inline-block;
+  position: relative;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  overflow: hidden;
+  margin-left: 0.2rem;
+}
+
+.cigarcard-header {
+  width: 100%;
+  height: 200px;
+  border-radius: 15px 15px 0 0;
+  display: flex;
+}
+
+.card:hover .card-header {
+  opacity: 0.8;
+  height: 100px;
+}
+.category {
+  flex-wrap: wrap;
+  color: blue;
+  display: flex;
+  margin-right: 0.4rem;
+  padding: 0.2rem 1.2rem;
+  border-radius: calc(var(--border-radius) * 2);
+  background: var(--gray-background);
+}
+
+.title {
+  font-size: 20px;
+  text-align: center;
+}
